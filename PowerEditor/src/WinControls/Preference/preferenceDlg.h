@@ -47,7 +47,20 @@ class EditingSubDlg : public StaticDialog
 friend class PreferenceDlg;
 public :
 	EditingSubDlg() = default;
-	~EditingSubDlg() {
+	~EditingSubDlg() = default;
+	
+private :
+	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
+	void initScintParam();
+	void changeLineHiliteMode(bool enableSlider);
+};
+
+class Editing2SubDlg : public StaticDialog
+{
+friend class PreferenceDlg;
+public :
+	Editing2SubDlg() = default;
+	~Editing2SubDlg() {
 		if (_tip != nullptr)
 		{
 			::DestroyWindow(_tip);
@@ -63,8 +76,8 @@ public :
 			}
 		}
 	};
-	
-private :
+
+private:
 	HWND _tip = nullptr;
 	HWND _tipNote = nullptr;
 	HWND _tipAbb = nullptr;
@@ -73,16 +86,17 @@ private :
 	HWND _tipNpcInclude = nullptr;
 
 	std::vector<HWND> _tips;
-
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
-	void initScintParam();
-	void changeLineHiliteMode(bool enableSlider);
 };
 
 class DarkModeSubDlg : public StaticDialog
 {
 public:
 	DarkModeSubDlg() = default;
+
+	void destroyResetMenu() {
+		_resetPopupMenu.destroy();
+	}
 
 private:
 	ColourPicker* _pBackgroundColorPicker = nullptr;
@@ -98,6 +112,8 @@ private:
 	ColourPicker* _pHotEdgeColorPicker = nullptr;
 	ColourPicker* _pDisabledEdgeColorPicker = nullptr;
 
+	ContextMenu _resetPopupMenu;
+
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	void enableCustomizedColorCtrls(bool doEnable);
 	void move2CtrlLeft(int ctrlID, HWND handle2Move, int handle2MoveWidth, int handle2MoveHeight);
@@ -105,19 +121,29 @@ private:
 
 class MarginsBorderEdgeSubDlg : public StaticDialog
 {
+friend class PreferenceDlg;
 public :
 	MarginsBorderEdgeSubDlg() = default;
-	
+	~MarginsBorderEdgeSubDlg() {
+		if (_verticalEdgeTip != nullptr)
+		{
+			::DestroyWindow(_verticalEdgeTip);
+			_verticalEdgeTip = nullptr;
+		}
+	};
+
 private :
-	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam);
+	HWND _verticalEdgeTip = nullptr;
+
+	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	void initScintParam();
 };
 
 struct LangID_Name
 {
 	LangType _id = L_TEXT;
-	generic_string _name;
-	LangID_Name(LangType id, const generic_string& name) : _id(id), _name(name){};
+	std::wstring _name;
+	LangID_Name(LangType id, const std::wstring& name) : _id(id), _name(name){};
 };
 
 class NewDocumentSubDlg : public StaticDialog
@@ -158,9 +184,33 @@ public :
 	LanguageSubDlg() = default;
 
 private :
-	LexerStylerArray _lsArray;
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	std::vector<LangMenuItem> _langList;
+};
+
+class IndentationSubDlg : public StaticDialog
+{
+friend class PreferenceDlg;
+public :
+	IndentationSubDlg() = default;
+	~IndentationSubDlg() {
+		if (_tipAutoIndentBasic != nullptr)
+		{
+			::DestroyWindow(_tipAutoIndentBasic);
+			_tipAutoIndentBasic = nullptr;
+		}
+
+		if (_tipAutoIndentAdvanced != nullptr)
+		{
+			::DestroyWindow(_tipAutoIndentAdvanced);
+			_tipAutoIndentAdvanced = nullptr;
+		}
+	};
+
+private :
+	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
+	HWND _tipAutoIndentBasic = nullptr;
+	HWND _tipAutoIndentAdvanced = nullptr;
 };
 
 class HighlightingSubDlg : public StaticDialog
@@ -199,7 +249,7 @@ public :
 
 private :
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
-	std::vector<generic_string> varList;
+	std::vector<std::wstring> varList;
 	int _focusedEditCtrl = 0;
 };
 
@@ -244,16 +294,17 @@ public :
 	};
 
 private :
-	POINT _singleLineModePoint = {};
-	POINT _multiLineModePoint = {};
-	RECT _closerRect = {};
-	RECT _closerLabelRect = {};
+	LONG _gapEditHor = 0;
+	LONG _gapEditVer = 0;
+	LONG _gapText = 0;
 	HWND _tip = nullptr;
 
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	void detectSpace(const char *text2Check, int & nbSp, int & nbTab) const;
-	generic_string getWarningText(size_t nbSp, size_t nbTab) const;
+	std::wstring getWarningText(size_t nbSp, size_t nbTab) const;
 	void setWarningIfNeed() const;
+	void calcCtrlsPos();
+	void setCtrlsPos(bool isMultiline);
 };
 
 class CloudAndLinkSubDlg : public StaticDialog
@@ -306,13 +357,13 @@ public :
 		display();
 	};
 
-	bool renameDialogTitle(const TCHAR *internalName, const TCHAR *newName);
+	bool renameDialogTitle(const wchar_t *internalName, const wchar_t *newName);
 	
 	int getListSelectedIndex() const {
 		return static_cast<int32_t>(::SendDlgItemMessage(_hSelf, IDC_LIST_DLGTITLE, LB_GETCURSEL, 0, 0));
 	};
 
-	void showDialogByName(const TCHAR *name) const;
+	void showDialogByName(const wchar_t *name) const;
 	bool setListSelection(size_t currentSel) const;
 
 	bool goToSection(size_t iPage, intptr_t ctrlID = -1);
@@ -322,16 +373,18 @@ public :
 private :
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	void makeCategoryList();
-	int32_t getIndexFromName(const TCHAR *name) const;
+	int32_t getIndexFromName(const wchar_t *name) const;
 	void showDialogByIndex(size_t index) const;
 	WindowVector _wVector;
 	GeneralSubDlg _generalSubDlg;
 	EditingSubDlg _editingSubDlg;
+	Editing2SubDlg _editing2SubDlg;
 	DarkModeSubDlg _darkModeSubDlg;
 	MarginsBorderEdgeSubDlg _marginsBorderEdgeSubDlg;
 	MiscSubDlg _miscSubDlg;
 	RegExtDlg _fileAssocDlg;
 	LanguageSubDlg _languageSubDlg;
+	IndentationSubDlg _indentationSubDlg;
 	HighlightingSubDlg _highlightingSubDlg;
 	PrintSubDlg _printSubDlg;
 	NewDocumentSubDlg _newDocumentSubDlg;

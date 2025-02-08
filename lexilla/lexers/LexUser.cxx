@@ -623,7 +623,7 @@ static bool IsNumber(StyleContext & sc, vector<string> * numberTokens[], vvstrin
 static inline void SubGroup(const char * s, vvstring & vec, bool group=false)
 {
     size_t length = strlen(s);
-    char * temp = new char[length+1];
+    char * temp = new char[length+1] {};
     unsigned int index = 0;
     vector<string> subvector;
     unsigned int i = 0;
@@ -697,7 +697,7 @@ static inline void SubGroup(const char * s, vvstring & vec, bool group=false)
 static inline void GenerateVector(vvstring & vec, const char * s, const char * prefix, size_t minLength)
 {
     size_t length = strlen(s);
-    char * temp = new char[length];
+    char * temp = new char[length] {};
     unsigned int index = 0;
     bool copy = false;
     bool inGroup = false;
@@ -1979,6 +1979,35 @@ static void ColouriseUserDoc(Sci_PositionU startPos, Sci_Position length, int in
                     break;
                 }
 
+                if (!commentOpen.empty())
+                {
+                    if (isInListForward(commentOpen, sc, ignoreCase, openIndex, skipForward))
+                    {
+                        if (foldComments)
+                        {
+                            isInComment = true;
+                            if (isCommentLine != COMMENTLINE_SKIP_TESTING)
+                                isCommentLine = COMMENTLINE_YES;
+                        }
+
+                        // any backward keyword 'glued' on the left side?
+                        setBackwards(kwLists, sc, prefixes, ignoreCase, bwNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);
+                        // paint up to start of comment sequence
+                        sc.SetState(SCE_USER_STYLE_COMMENT);
+                        // record start of comment sequence (NI_OPEN) in BOTH nesting vectors
+                        nestedVector.push_back(*NI.Set(sc.currentPos, ++nestedLevel, openIndex, SCE_USER_STYLE_COMMENT, NI_OPEN));
+                        lastNestedGroup.push_back(NI);
+                        // paint start of comment sequence
+                        sc.Forward(skipForward);
+                        sc.SetState(SCE_USER_STYLE_COMMENT);
+                        dontMove = true;
+                        if (sc.atLineEnd)
+                            checkEOL = EOL_SKIP_CHECK;
+
+                        break;
+                    }
+                }
+
                 if (!commentLineOpen.empty())
                 {
                     if ((pureLC == PURE_LC_NONE) ||
@@ -2006,35 +2035,6 @@ static void ColouriseUserDoc(Sci_PositionU startPos, Sci_Position length, int in
 
                             break;
                         }
-                    }
-                }
-
-                if (!commentOpen.empty())
-                {
-                    if (isInListForward(commentOpen, sc, ignoreCase, openIndex, skipForward))
-                    {
-                        if (foldComments)
-                        {
-                            isInComment = true;
-                            if (isCommentLine != COMMENTLINE_SKIP_TESTING)
-                                isCommentLine = COMMENTLINE_YES;
-                        }
-
-                        // any backward keyword 'glued' on the left side?
-                        setBackwards(kwLists, sc, prefixes, ignoreCase, bwNesting, fwEndVectors, levelMinCurrent, levelNext, nlCount, dontMove, docLength);
-                        // paint up to start of comment sequence
-                        sc.SetState(SCE_USER_STYLE_COMMENT);
-                        // record start of comment sequence (NI_OPEN) in BOTH nesting vectors
-                        nestedVector.push_back(*NI.Set(sc.currentPos, ++nestedLevel, openIndex, SCE_USER_STYLE_COMMENT, NI_OPEN));
-                        lastNestedGroup.push_back(NI);
-                        // paint start of comment sequence
-                        sc.Forward(skipForward);
-                        sc.SetState(SCE_USER_STYLE_COMMENT);
-                        dontMove = true;
-                        if (sc.atLineEnd)
-                            checkEOL = EOL_SKIP_CHECK;
-
-                        break;
                     }
                 }
 
@@ -2329,4 +2329,4 @@ static const char * const userDefineWordLists[] = {
             0,
         };
 
-LexerModule lmUserDefine(SCLEX_USER, ColouriseUserDoc, "user", FoldUserDoc, userDefineWordLists);
+extern const LexerModule lmUserDefine(SCLEX_USER, ColouriseUserDoc, "user", FoldUserDoc, userDefineWordLists);

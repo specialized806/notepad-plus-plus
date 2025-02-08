@@ -41,13 +41,8 @@ namespace ReadDirectoryChangesPrivate
 // CReadChangesRequest
 
 CReadChangesRequest::CReadChangesRequest(CReadChangesServer* pServer, LPCTSTR sz, BOOL b, DWORD dw, DWORD size)
+: m_pServer(pServer), m_wstrDirectory(sz), m_bIncludeChildren(b), m_dwFilterFlags(dw)
 {
-	m_pServer		= pServer;
-	m_dwFilterFlags		= dw;
-	m_bIncludeChildren	= b;
-	m_wstrDirectory	= sz;
-	m_hDirectory	= 0;
-
 	::ZeroMemory(&m_Overlapped, sizeof(OVERLAPPED));
 
 	// The hEvent member is not used when there is a completion
@@ -126,7 +121,7 @@ VOID CALLBACK CReadChangesRequest::NotificationCompletion(
 	// Can't use sizeof(FILE_NOTIFY_INFORMATION) because
 	// the structure is padded to 16 bytes.
 	assert((dwNumberOfBytesTransfered == 0) ||
-		(dwNumberOfBytesTransfered >= offsetof(FILE_NOTIFY_INFORMATION, FileName) + sizeof(WCHAR)));
+		(dwNumberOfBytesTransfered >= offsetof(FILE_NOTIFY_INFORMATION, FileName) + sizeof(wchar_t)));
 
 	pBlock->BackupBuffer(dwNumberOfBytesTransfered);
 

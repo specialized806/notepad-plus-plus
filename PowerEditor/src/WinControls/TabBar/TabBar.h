@@ -27,6 +27,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "Window.h"
+#include "dpiManagerV2.h"
 
 //Notification message
 #define TCN_TABDROPPED (TCN_FIRST - 10)
@@ -35,23 +36,39 @@
 #define TCN_MOUSEHOVERING (TCN_FIRST - 13)
 #define TCN_MOUSELEAVING (TCN_FIRST - 14)
 #define TCN_MOUSEHOVERSWITCHING (TCN_FIRST - 15)
+#define TCN_TABPINNED (TCN_FIRST - 16)
 
 #define WM_TABSETSTYLE	(WM_APP + 0x024)
 
 const int marge = 8;
 const int nbCtrlMax = 10;
 
-const TCHAR TABBAR_ACTIVEFOCUSEDINDCATOR[64] = TEXT("Active tab focused indicator");
-const TCHAR TABBAR_ACTIVEUNFOCUSEDINDCATOR[64] = TEXT("Active tab unfocused indicator");
-const TCHAR TABBAR_ACTIVETEXT[64] = TEXT("Active tab text");
-const TCHAR TABBAR_INACTIVETEXT[64] = TEXT("Inactive tabs");
+const wchar_t TABBAR_ACTIVEFOCUSEDINDCATOR[64] = L"Active tab focused indicator";
+const wchar_t TABBAR_ACTIVEUNFOCUSEDINDCATOR[64] = L"Active tab unfocused indicator";
+const wchar_t TABBAR_ACTIVETEXT[64] = L"Active tab text";
+const wchar_t TABBAR_INACTIVETEXT[64] = L"Inactive tabs";
+
+const wchar_t TABBAR_INDIVIDUALCOLOR_1[64] = L"Tab color 1";
+const wchar_t TABBAR_INDIVIDUALCOLOR_2[64] = L"Tab color 2";
+const wchar_t TABBAR_INDIVIDUALCOLOR_3[64] = L"Tab color 3";
+const wchar_t TABBAR_INDIVIDUALCOLOR_4[64] = L"Tab color 4";
+const wchar_t TABBAR_INDIVIDUALCOLOR_5[64] = L"Tab color 5";
+
+const wchar_t TABBAR_INDIVIDUALCOLOR_DM_1[64] = L"Tab color dark mode 1";
+const wchar_t TABBAR_INDIVIDUALCOLOR_DM_2[64] = L"Tab color dark mode 2";
+const wchar_t TABBAR_INDIVIDUALCOLOR_DM_3[64] = L"Tab color dark mode 3";
+const wchar_t TABBAR_INDIVIDUALCOLOR_DM_4[64] = L"Tab color dark mode 4";
+const wchar_t TABBAR_INDIVIDUALCOLOR_DM_5[64] = L"Tab color dark mode 5";
 
 constexpr int g_TabIconSize = 16;
 constexpr int g_TabHeight = 22;
 constexpr int g_TabHeightLarge = 25;
 constexpr int g_TabWidth = 45;
-constexpr int g_TabWidthCloseBtn = 60;
+constexpr int g_TabWidthButton = 60;
 constexpr int g_TabCloseBtnSize = 11;
+constexpr int g_TabPinBtnSize = 11;
+constexpr int g_TabCloseBtnSize_DM = 16;
+constexpr int g_TabPinBtnSize_DM = 16;
 
 struct TBHDR
 {
@@ -69,9 +86,9 @@ public:
 	void destroy() override;
 	virtual void init(HINSTANCE hInst, HWND hwnd, bool isVertical = false, bool isMultiLine = false);
 	void reSizeTo(RECT& rc2Ajust) override;
-	int insertAtEnd(const TCHAR *subTabName);
+	int insertAtEnd(const wchar_t *subTabName);
 	void activateAt(int index) const;
-	void getCurrentTitle(TCHAR *title, int titleLen);
+	void getCurrentTitle(wchar_t *title, int titleLen);
 
 	int32_t getCurrentTabIndex() const {
 		return static_cast<int32_t>(SendMessage(_hSelf, TCM_GETCURSEL, 0, 0));
@@ -94,7 +111,7 @@ public:
         return _nbItem;
     }
 
-	void setFont(const TCHAR *fontName, int fontSize);
+	void setFont();
 
 	void setVertical(bool b) {
 		_isVertical = b;
@@ -108,9 +125,14 @@ public:
 		return isReduced ? _hFont : _hLargeFont;
 	}
 
+	int getNextOrPrevTabIdx(bool isNext) const;
+
+	DPIManagerV2& dpiManager() { return _dpiManager; };
+
 protected:
 	size_t _nbItem = 0;
 	bool _hasImgLst = false;
+
 	HFONT _hFont = nullptr;
 	HFONT _hLargeFont = nullptr;
 	HFONT _hVerticalFont = nullptr;
@@ -121,20 +143,29 @@ protected:
 	bool _isVertical = false;
 	bool _isMultiLine = false;
 
+	DPIManagerV2 _dpiManager;
+
 	long getRowCount() const {
 		return long(::SendMessage(_hSelf, TCM_GETROWCOUNT, 0, 0));
 	}
 };
 
 
-struct CloseButtonZone
+struct TabButtonZone
 {
-	CloseButtonZone();
+	void init(HWND parent, int order) {
+		_parent = parent;
+		_order = order;
+	}
+
 	bool isHit(int x, int y, const RECT & tabRect, bool isVertical) const;
 	RECT getButtonRectFrom(const RECT & tabRect, bool isVertical) const;
+	void setOrder(int newOrder) { _order = newOrder; };
 
+	HWND _parent = nullptr;
 	int _width = 0;
 	int _height = 0;
+	int _order = -1; // from right to left: 0, 1
 };
 
 
@@ -147,24 +178,20 @@ public :
 		activeText, activeFocusedTop, activeUnfocusedTop, inactiveText, inactiveBg
 	};
 
+	enum individualTabColourId {
+		id0, id1, id2, id3, id4, id5, id6, id7, id8, id9
+	};
+
 	static void doDragNDrop(bool justDoIt) {
         _doDragNDrop = justDoIt;
     };
 
-	void init(HINSTANCE hInst, HWND hwnd, bool isVertical = false, bool isMultiLine = false) override;
+	void init(HINSTANCE hInst, HWND hwnd, bool isVertical, bool isMultiLine, unsigned char buttonsStatus = 0);
 
 	void destroy() override;
 
     static bool doDragNDropOrNot() {
         return _doDragNDrop;
-    };
-
-	int getSrcTabIndex() const {
-        return _nSrcTab;
-    };
-
-    int getTabDraggedIndex() const {
-        return _nTabDragged;
     };
 
 	POINT getDraggingPoint() const {
@@ -176,30 +203,36 @@ public :
 		_draggingPoint.y = 0;
 	};
 
-	static void doOwnerDrawTab();
+	static void doOwnerDrawTab(TabBarPlus* tbpObj);
 	static void doVertical();
 	static void doMultiLine();
-	static bool isOwnerDrawTab() {return true;};
 	static bool drawTopBar() {return _drawTopBar;};
 	static bool drawInactiveTab() {return _drawInactiveTab;};
 	static bool drawTabCloseButton() {return _drawTabCloseButton;};
+	static bool drawTabPinButton() {return _drawTabPinButton;};
 	static bool isDbClk2Close() {return _isDbClk2Close;};
 	static bool isVertical() { return _isCtrlVertical;};
 	static bool isMultiLine() { return _isCtrlMultiLine;};
+	static bool isReduced() { return _isReduced;};
 
-	static void setDrawTopBar(bool b) {
+	static void setDrawTopBar(bool b, TabBarPlus* tbpObj) {
 		_drawTopBar = b;
-		doOwnerDrawTab();
+		doOwnerDrawTab(tbpObj);
 	}
 
-	static void setDrawInactiveTab(bool b) {
+	static void setDrawInactiveTab(bool b, TabBarPlus* tbpObj) {
 		_drawInactiveTab = b;
-		doOwnerDrawTab();
+		doOwnerDrawTab(tbpObj);
 	}
 
-	static void setDrawTabCloseButton(bool b) {
+	static void setDrawTabCloseButton(bool b, TabBarPlus* tbpObj) {
 		_drawTabCloseButton = b;
-		doOwnerDrawTab();
+		doOwnerDrawTab(tbpObj);
+	}
+
+	static void setDrawTabPinButton(bool b, TabBarPlus* tbpObj) {
+		_drawTabPinButton = b;
+		doOwnerDrawTab(tbpObj);
 	}
 
 	static void setDbClk2Close(bool b) {
@@ -216,9 +249,34 @@ public :
 		doMultiLine();
 	}
 
-	static void setColour(COLORREF colour2Set, tabColourIndex i);
+	static void setReduced(bool b, TabBarPlus* tbpObj) {
+		_isReduced = b;
+		doOwnerDrawTab(tbpObj);
+	}
 
-	virtual int getIndividualTabColour(int tabIndex) = 0;
+	static void setColour(COLORREF colour2Set, tabColourIndex i, TabBarPlus* tbpObj);
+	virtual int getIndividualTabColourId(int tabIndex) = 0;
+
+	void tabToStart(int index = -1);
+	void tabToEnd(int index = -1);
+
+	void setCloseBtnImageList();
+	void setPinBtnImageList();
+
+	void setTabPinButtonOrder(int newOrder) {
+		_pinButtonZone.setOrder(newOrder);
+	}
+
+	void setTabCloseButtonOrder(int newOrder) {
+		_closeButtonZone.setOrder(newOrder);
+	}
+
+	// Hack for forcing the tab width change
+	// ref: https://github.com/notepad-plus-plus/notepad-plus-plus/pull/15781#issuecomment-2469387409
+	void refresh() {
+		int index = insertAtEnd(L"");
+		deletItemAt(index);
+	}
 
 protected:
     // it's the boss to decide if we do the drag N drop
@@ -237,9 +295,28 @@ protected:
 	RECT _currentHoverTabRect{};
 	int _currentHoverTabItem = -1; // -1 : no mouse on any tab
 
-	CloseButtonZone _closeButtonZone;
+	TabButtonZone _closeButtonZone;
+	TabButtonZone _pinButtonZone;
+
+	HIMAGELIST _hCloseBtnImgLst = nullptr;
+	const int _closeTabIdx = 0;
+	const int _closeTabInactIdx = 1;
+	const int _closeTabHoverInIdx = 2; // hover inside of box
+	const int _closeTabHoverOnTabIdx = 3; // hover on the tab, but outside of box
+	const int _closeTabPushIdx = 4;
+
+	HIMAGELIST _hPinBtnImgLst = nullptr;
+	const int _unpinnedIdx = 0;
+	const int _unpinnedInactIdx = 1;
+	const int _unpinnedHoverInIdx = 2; // hover inside of box
+	const int _unpinnedHoverOnTabIdx = 3; // hover on the tab, but outside of box
+	const int _pinnedIdx = 4;
+	const int _pinnedHoverIdx = 5;
+
 	bool _isCloseHover = false;
+	bool _isPinHover = false;
 	int _whichCloseClickDown = -1;
+	int _whichPinClickDown = -1;
 	bool _lmbdHit = false; // Left Mouse Button Down Hit
 	HWND _tooltips = nullptr;
 
@@ -249,7 +326,7 @@ protected:
 		return (((TabBarPlus *)(::GetWindowLongPtr(hwnd, GWLP_USERDATA)))->runProc(hwnd, Message, wParam, lParam));
 	};
 	void setActiveTab(int tabIndex);
-	void exchangeTabItemData(int oldTab, int newTab);
+	bool exchangeTabItemData(int oldTab, int newTab);
 	void exchangeItemData(POINT point);
 
 
@@ -257,9 +334,11 @@ protected:
 	static bool _drawInactiveTab;
 	static bool _drawTopBar;
 	static bool _drawTabCloseButton;
+	static bool _drawTabPinButton;
 	static bool _isDbClk2Close;
 	static bool _isCtrlVertical;
 	static bool _isCtrlMultiLine;
+	static bool _isReduced;
 
 	static COLORREF _activeTextColour;
 	static COLORREF _activeTopBarFocusedColour;
@@ -273,21 +352,18 @@ protected:
 	void drawItem(DRAWITEMSTRUCT *pDrawItemStruct, bool isDarkMode = false);
 	void draggingCursor(POINT screenPoint);
 
-	int getTabIndexAt(const POINT & p)
-	{
+	int getTabIndexAt(const POINT & p) const {
 		return getTabIndexAt(p.x, p.y);
 	}
 
-	int32_t getTabIndexAt(int x, int y)
-	{
+	int32_t getTabIndexAt(int x, int y) const {
 		TCHITTESTINFO hitInfo{};
 		hitInfo.pt.x = x;
 		hitInfo.pt.y = y;
 		return static_cast<int32_t>(::SendMessage(_hSelf, TCM_HITTEST, 0, reinterpret_cast<LPARAM>(&hitInfo)));
 	}
 
-	bool isPointInParentZone(POINT screenPoint) const
-	{
+	bool isPointInParentZone(POINT screenPoint) const {
 		RECT parentZone{};
         ::GetWindowRect(_hParent, &parentZone);
 	    return (((screenPoint.x >= parentZone.left) && (screenPoint.x <= parentZone.right)) &&

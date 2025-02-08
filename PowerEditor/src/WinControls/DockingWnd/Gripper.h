@@ -37,7 +37,7 @@ static const WORD DotPattern[] =
 };
 
 
-#define MDLG_CLASS_NAME TEXT("moveDlg")
+#define MDLG_CLASS_NAME L"moveDlg"
 
 
 class Gripper final
@@ -63,9 +63,11 @@ public:
 			#endif
 			::ReleaseDC(0, _hdc);
 		}
+
 		if (_hbm) {
 			::DeleteObject(_hbm);
 		}
+
 		if (_hbrush) {
 			::DeleteObject(_hbrush);
 		}
@@ -83,7 +85,7 @@ protected :
 
 	void doTabReordering(POINT pt);
 	void drawRectangle(const POINT* pPt);
-	void getMousePoints(POINT* pt, POINT* ptPrev);
+	void getMousePoints(const POINT& pt, POINT& ptPrev);
 	void getMovingRect(POINT pt, RECT *rc);
 	DockingCont * contHitTest(POINT pt);
 	DockingCont * workHitTest(POINT pt, RECT *rcCont = NULL);

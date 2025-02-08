@@ -39,7 +39,6 @@ const COLORREF grey      	            = RGB(128,   128,  128);
 const COLORREF liteGrey  	            = RGB(192,   192,  192);
 const COLORREF veryLiteGrey  	        = RGB(224,   224,  224);
 const COLORREF brown     	            = RGB(128,    64,    0);
-//const COLORREF greenBlue 	            = RGB(192,   128,   64);
 const COLORREF darkYellow				= RGB(0xFF, 0xC0,    0);
 const COLORREF yellow    	            = RGB(0xFF, 0xFF,    0);
 const COLORREF lightYellow				= RGB(0xFF, 0xFF, 0xD5);
@@ -52,3 +51,9 @@ const COLORREF extremeLitePurple        = RGB(0xF8, 0xE8, 0xFF);
 const COLORREF veryLitePurple           = RGB(0xE7, 0xD8, 0xE9);
 const COLORREF liteBerge				= RGB(0xFE, 0xFC, 0xF5);
 const COLORREF berge					= RGB(0xFD, 0xF8, 0xE3);
+
+
+// Change History default colours. Modified uses existing orange colour
+const COLORREF midGreen                 = RGB(0,    0xA0,    0); // saved
+const COLORREF darkCyan                 = RGB(0x40, 0xA0, 0xBF); // revert origin
+const COLORREF yellowGreen              = RGB(0xA0, 0xC0,    0); // revert modified

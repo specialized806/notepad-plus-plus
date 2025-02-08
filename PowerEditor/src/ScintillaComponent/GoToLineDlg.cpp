@@ -18,7 +18,7 @@
 #include "GoToLineDlg.h"
 
 
-intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
+intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -69,9 +69,17 @@ intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
 			return TRUE;
 		}
 
+		case WM_DPICHANGED:
+		{
+			_dpiManager.setDpiWP(wParam);
+			setPositionDpi(lParam);
+
+			return TRUE;
+		}
+
 		case WM_COMMAND:
 		{
-			switch (wParam)
+			switch (LOWORD(wParam))
 			{
 				case IDCANCEL : // Close
 					display(false);
@@ -79,6 +87,7 @@ intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
 
 				case IDOK :
                 {
+					(*_ppEditView)->execute(SCI_SETMODEVENTMASK, MODEVENTMASK_OFF);
                     long long line = getLine();
                     if (line != -1)
                     {
@@ -103,6 +112,8 @@ intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
 							(*_ppEditView)->execute(SCI_GOTOPOS, posToGoto);
 						}
 					}
+					unsigned long MODEVENTMASK_ON = NppParameters::getInstance().getScintillaModEventMask();
+					(*_ppEditView)->execute(SCI_SETMODEVENTMASK, MODEVENTMASK_ON);
 
 					SCNotification notification{};
 					notification.nmhdr.code = SCN_PAINTED;
@@ -110,7 +121,7 @@ intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
 					notification.nmhdr.idFrom = ::GetDlgCtrlID(_hSelf);
 					::SendMessage(_hParent, WM_NOTIFY, LINKTRIGGERED, reinterpret_cast<LPARAM>(&notification));
 
-                    (*_ppEditView)->getFocus();
+                    (*_ppEditView)->grabFocus();
                     return TRUE;
                 }
 
@@ -144,7 +155,7 @@ intptr_t CALLBACK GoToLineDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM)
 	return FALSE;
 }
 
-void GoToLineDlg::updateLinesNumbers() const 
+void GoToLineDlg::updateLinesNumbers() const
 {
 	size_t current = 0;
 	size_t limit = 0;
@@ -161,6 +172,6 @@ void GoToLineDlg::updateLinesNumbers() const
 		limit = (currentDocLength > 0 ? currentDocLength - 1 : 0);
 	}
 
-	::SetDlgItemTextA(_hSelf, ID_CURRLINE, std::to_string(current).c_str());
+	::SetDlgItemTextA(_hSelf, ID_CURRLINE_EDIT, std::to_string(current).c_str());
 	::SetDlgItemTextA(_hSelf, ID_LASTLINE, std::to_string(limit).c_str());
 }

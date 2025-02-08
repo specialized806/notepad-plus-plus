@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <NotepadPlus>
+	<!--
+	If "RTL" attribute is present and its value is "yes", then user can add "editZoneRTL" attribute beside,
+	and set the value of the attribute in question to "no", so Notepad++ GUI will be RTL,
+	but Scintilla zone will be LTR by opening files (see the commented example).
+	Of course, user can set any direction they want afterward, and what they have set on document will be remembered across the sessions.
+	-->
+	<!-- Native-Langue name="كوردی" RTL="yes" editZoneRTL="no" filename="kurdish.xml" version="7.5" -->
 	<Native-Langue name="كوردی" RTL="yes" filename="kurdish.xml" version="7.5">
 		<Menu>
 			<Main>
@@ -369,7 +376,6 @@
 				<Item id="1625" name="ئاسایی"/>
 				<Item id="1626" name="Extended (\n, \r, \t, \0, \x...)"/>
 				<Item id="1660" name="گۆڕین لە پەڕگە"/>
-				<Item id="1661" name="شوێنكەوتنی بەڵگەنامەی ئێستا."/>
 				<Item id="1641" name="گەڕان لە بەڵگەنامەكانی ئێستا"/>
 				<Item id="1686" name="ڕوونی"/>
 				<Item id="1703" name="&amp;. matches newline"/>
@@ -633,7 +639,6 @@
 					<Item id="6109" name="Darken inactive tabs"/>
 					<Item id="6110" name="Draw a coloured bar on active tab"/>
 
-					<Item id="6111" name="Show status bar"/>
 					<Item id="6112" name="Show close button on each tab"/>
 					<Item id="6113" name="Double click to close document"/>
 					<Item id="6118" name="Hide"/>
@@ -794,7 +799,6 @@
 				</Backup>
 
 				<AutoCompletion title="Auto-Completion">
-					<Item id="6115" name="Auto-indent"/>
 					<Item id="6807" name="Auto-Completion"/>
 					<Item id="6808" name="Enable auto-completion on each input"/>
 					<Item id="6809" name="Function completion"/>
@@ -851,8 +855,6 @@
 				</SearchEngine>
 
 				<MISC title="MISC.">
-					<Item id="6307" name="Enable"/>
-					<Item id="6308" name="Minimize to system tray"/>
 					<Item id="6312" name="File Status Auto-Detection"/>
 					<Item id="6313" name="Update silently"/>
 					<Item id="6318" name="Clickable Link Settings"/>

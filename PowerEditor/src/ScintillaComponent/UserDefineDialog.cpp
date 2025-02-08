@@ -37,7 +37,7 @@ GlobalMappers & globalMappper()
     return gm;
 }
 
-void convertTo(TCHAR *dest, int destLen, const TCHAR *toConvert, const TCHAR *prefix)
+void convertTo(wchar_t *dest, int destLen, const wchar_t *toConvert, const wchar_t *prefix)
 {
 	bool inGroup = false;
 	int index = lstrlen(dest);
@@ -100,9 +100,13 @@ intptr_t CALLBACK SharedParametersDialog::run_dlgProc(UINT Message, WPARAM wPara
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
+        case WM_INITDIALOG:
         {
             // initControls();
+
+            // Allow tab switch between main dialog and subdialogs
+            const auto exStyle = ::GetWindowLongPtr(_hSelf, GWL_EXSTYLE);
+            ::SetWindowLongPtr(_hSelf, GWL_EXSTYLE, exStyle | WS_EX_CONTROLPARENT);
             return TRUE;
         }
 
@@ -147,14 +151,20 @@ intptr_t CALLBACK FolderStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, LP
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
+        case WM_INITDIALOG:
         {
             _pageLink.init(_hInst, _hSelf);
-            _pageLink.create(::GetDlgItem(_hSelf, IDC_WEB_HELP_LINK), TEXT("https://ivan-radic.github.io/udl-documentation/"));
+            _pageLink.create(::GetDlgItem(_hSelf, IDC_WEB_HELP_LINK), L"https://npp-user-manual.org/docs/user-defined-language-system/");
+            return SharedParametersDialog::run_dlgProc(Message, wParam, lParam);
+        }
+
+        case WM_DPICHANGED_AFTERPARENT:
+        {
+            _pageLink.destroy();
             return TRUE;
         }
 
-        case WM_COMMAND :
+        case WM_COMMAND:
         {
             switch (wParam)
             {
@@ -233,7 +243,7 @@ void FolderStyleDialog::updateDlg()
     ::SendDlgItemMessage(_hSelf, IDC_FOLDER_IN_COMMENT_CLOSE_EDIT,  WM_SETTEXT, 0, reinterpret_cast<LPARAM>(_pUserLang->_keywordLists[SCE_USER_KWLIST_FOLDERS_IN_COMMENT_CLOSE]));
 }
 
-void FolderStyleDialog::retrieve(TCHAR *dest, const TCHAR *toRetrieve, TCHAR *prefix) const
+void FolderStyleDialog::retrieve(wchar_t *dest, const wchar_t *toRetrieve, wchar_t *prefix) const
 {
     int j = 0;
     bool begin2Copy = false;
@@ -264,9 +274,9 @@ intptr_t CALLBACK KeyWordsStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, 
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
+        case WM_INITDIALOG:
         {
-            // extend Keyword edit boxes to hold 128k of TCHARs
+            // extend Keyword edit boxes to hold 128k of wchar_t
             ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD1_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
             ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD2_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
             ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD3_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
@@ -276,10 +286,10 @@ intptr_t CALLBACK KeyWordsStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, 
             ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD7_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
             ::SendMessage(::GetDlgItem(_hSelf,IDC_KEYWORD8_EDIT), EM_LIMITTEXT, WPARAM(128*1024), 0);
 
-            return TRUE;
+            return SharedParametersDialog::run_dlgProc(Message, wParam, lParam);
         }
 
-        case WM_COMMAND :
+        case WM_COMMAND:
         {
             switch (wParam)
             {
@@ -514,9 +524,9 @@ void CommentStyleDialog::setKeywords2List(int id)
     }
     if (index != -1)
     {
-        TCHAR* newList = new TCHAR[max_char];
+        wchar_t* newList = new wchar_t[max_char];
         newList[0] = '\0';
-        TCHAR* buffer = new TCHAR[max_char];
+        wchar_t* buffer = new wchar_t[max_char];
         buffer[0] = '\0';
 
         const int list[] = {
@@ -527,7 +537,7 @@ void CommentStyleDialog::setKeywords2List(int id)
             IDC_COMMENT_CLOSE_EDIT
         };
 
-        TCHAR intBuffer[10] = { '0', 0 };
+        wchar_t intBuffer[10] = { '0', 0 };
         for (int i = 0; static_cast<size_t>(i) < sizeof(list) / sizeof(int); ++i)
         {
             _itow(i, intBuffer + 1, 10);
@@ -541,7 +551,7 @@ void CommentStyleDialog::setKeywords2List(int id)
     }
 }
 
-void CommentStyleDialog::retrieve(TCHAR *dest, const TCHAR *toRetrieve, const TCHAR *prefix) const
+void CommentStyleDialog::retrieve(wchar_t *dest, const wchar_t *toRetrieve, const wchar_t *prefix) const
 {
     int j = 0;
     bool begin2Copy = false;
@@ -579,7 +589,7 @@ void CommentStyleDialog::retrieve(TCHAR *dest, const TCHAR *toRetrieve, const TC
 
 void CommentStyleDialog::updateDlg()
 {
-    TCHAR* buffer = new TCHAR[max_char];
+    wchar_t* buffer = new wchar_t[max_char];
     buffer[0] = '\0';
 
     const int list[] = {
@@ -590,7 +600,7 @@ void CommentStyleDialog::updateDlg()
         IDC_COMMENT_CLOSE_EDIT
     };
 
-    TCHAR intBuffer[10] = { '0', 0 };
+    wchar_t intBuffer[10] = { '0', 0 };
     for (int i = 0; static_cast<size_t>(i) < sizeof(list) / sizeof(int); ++i)
     {
         _itow(i, intBuffer + 1, 10);
@@ -621,7 +631,7 @@ void CommentStyleDialog::updateDlg()
 
 void SymbolsStyleDialog::updateDlg()
 {
-    TCHAR* buffer = new TCHAR[max_char];
+    wchar_t* buffer = new wchar_t[max_char];
     buffer[0] = '\0';
     const int list[] = {
         IDC_DELIMITER1_BOUNDARYOPEN_EDIT,
@@ -649,7 +659,7 @@ void SymbolsStyleDialog::updateDlg()
         IDC_DELIMITER8_ESCAPE_EDIT,
         IDC_DELIMITER8_BOUNDARYCLOSE_EDIT
     };
-    TCHAR intBuffer[10] = {'0', 0};
+    wchar_t intBuffer[10] = {'0', 0};
 
     for (int i = 0; static_cast<size_t>(i) < sizeof(list)/sizeof(int); ++i)
     {
@@ -740,7 +750,7 @@ intptr_t CALLBACK SymbolsStyleDialog::run_dlgProc(UINT Message, WPARAM wParam, L
 }
 
 
-void SymbolsStyleDialog::retrieve(TCHAR *dest, const TCHAR *toRetrieve, TCHAR *prefix) const
+void SymbolsStyleDialog::retrieve(wchar_t *dest, const wchar_t *toRetrieve, wchar_t *prefix) const
 {
     int j = 0;
     bool begin2Copy = false;
@@ -812,11 +822,11 @@ void SymbolsStyleDialog::setKeywords2List(int id)
         case IDC_DELIMITER8_ESCAPE_EDIT :
         case IDC_DELIMITER8_BOUNDARYCLOSE_EDIT :
         {
-            TCHAR* newList = new TCHAR[max_char];
+            wchar_t* newList = new wchar_t[max_char];
             newList[0] = '\0';
-            TCHAR* buffer = new TCHAR[max_char];
+            wchar_t* buffer = new wchar_t[max_char];
             buffer[0] = '\0';
-            TCHAR intBuffer[10] = {'0', 0};
+            wchar_t intBuffer[10] = {'0', 0};
 
             const int list[] = {
                 IDC_DELIMITER1_BOUNDARYOPEN_EDIT,
@@ -906,7 +916,7 @@ void UserDefineDialog::reloadLangCombo()
 {
     NppParameters& nppParam = NppParameters::getInstance();
     ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_RESETCONTENT, 0, 0);
-	::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(TEXT("User Defined Language")));
+	::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(L"User Defined Language"));
     for (int i = 0, nb = nppParam.getNbUserLang(); i < nb ; ++i)
     {
         UserLangContainer & userLangContainer = nppParam.getULCFromIndex(i);
@@ -925,17 +935,17 @@ void UserDefineDialog::changeStyle()
         if (targetNode)
             targetNode = targetNode->FirstChildElement("UserDefine");
     }
-    generic_string dockButtonLabel;
-    generic_string defauleLabel;
+    wstring dockButtonLabel;
+    wstring defauleLabel;
     string idStr;
     if (_status == DOCK)
     {
-        defauleLabel = TEXT("Undock");
+        defauleLabel = L"Undock";
         idStr = std::to_string(IDC_UNDOCK_BUTTON);
     }
     else
     {
-        defauleLabel = TEXT("Dock");
+        defauleLabel = L"Dock";
         idStr = std::to_string(IDC_DOCK_BUTTON);
     }
 
@@ -944,7 +954,7 @@ void UserDefineDialog::changeStyle()
 
     auto style = ::GetWindowLongPtr(_hSelf, GWL_STYLE);
     if (!style)
-        ::MessageBox(NULL, TEXT("GetWindowLongPtr failed in UserDefineDialog::changeStyle()"), TEXT(""), MB_OK);
+        ::MessageBox(NULL, L"GetWindowLongPtr failed in UserDefineDialog::changeStyle()", L"", MB_OK);
 
     style = (_status == DOCK)?
         ((style & ~WS_POPUP) & ~DS_MODALFRAME & ~WS_CAPTION) | WS_CHILD :
@@ -952,7 +962,7 @@ void UserDefineDialog::changeStyle()
 
     auto result = ::SetWindowLongPtr(_hSelf, GWL_STYLE, style);
     if (!result)
-        ::MessageBox(NULL, TEXT("SetWindowLongPtr failed in UserDefineDialog::changeStyle()"), TEXT(""), MB_OK);
+        ::MessageBox(NULL, L"SetWindowLongPtr failed in UserDefineDialog::changeStyle()", L"", MB_OK);
 
     if (_status == DOCK)
         getActualPosSize();
@@ -1005,9 +1015,6 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
             _ctrlTab.init(_hInst, _hSelf, false);
             NppDarkMode::subclassTabControl(_ctrlTab.getHSelf());
 
-            int tabDpiDynamicalHeight = nppParam._dpiManager.scaleY(13);
-            _ctrlTab.setFont(TEXT("Tahoma"), tabDpiDynamicalHeight);
-
             _folderStyleDlg.init(_hInst, _hSelf);
             _folderStyleDlg.create(IDD_FOLDER_STYLE_DLG);
             _folderStyleDlg.display();
@@ -1024,10 +1031,10 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
             _symbolsStyleDlg.create(IDD_SYMBOL_STYLE_DLG);
             _symbolsStyleDlg.display(false);
 
-            _wVector.push_back(DlgInfo(&_folderStyleDlg,    TEXT("Folder && Default")));
-            _wVector.push_back(DlgInfo(&_keyWordsStyleDlg,  TEXT("Keywords Lists")));
-            _wVector.push_back(DlgInfo(&_commentStyleDlg,   TEXT("Comment && Number")));
-            _wVector.push_back(DlgInfo(&_symbolsStyleDlg,   TEXT("Operators && Delimiters")));
+            _wVector.push_back(DlgInfo(&_folderStyleDlg,    L"Folder && Default"));
+            _wVector.push_back(DlgInfo(&_keyWordsStyleDlg,  L"Keywords Lists"));
+            _wVector.push_back(DlgInfo(&_commentStyleDlg,   L"Comment && Number"));
+            _wVector.push_back(DlgInfo(&_symbolsStyleDlg,   L"Operators && Delimiters"));
 
             _ctrlTab.createTabs(_wVector);
             _ctrlTab.display();
@@ -1073,14 +1080,14 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
             si.nMax   = 0;
             ::SetScrollInfo(_hSelf, SB_VERT, &si, TRUE);
 
-            TCHAR temp[32] = { '\0' };
-            generic_string udlVersion = TEXT("User Defined Language v.");
+            wchar_t temp[32] = { '\0' };
+            wstring udlVersion = L"User Defined Language v.";
             udlVersion += _itow(SCE_UDL_VERSION_MAJOR, temp, 10);
-            udlVersion += TEXT(".");
+            udlVersion += L".";
             udlVersion += _itow(SCE_UDL_VERSION_MINOR, temp, 10);
-            udlVersion += TEXT(".");
+            udlVersion += L".";
             udlVersion += _itow(SCE_UDL_VERSION_BUILD, temp, 10);
-            udlVersion += TEXT(".");
+            udlVersion += L".";
             udlVersion += _itow(SCE_UDL_VERSION_REVISION, temp, 10);
 
             ::SetWindowText(_hSelf, udlVersion.c_str());
@@ -1125,7 +1132,7 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
 
         case WM_NOTIFY:
         {
-            NMHDR *nmhdr = (NMHDR *)lParam;
+            const NMHDR *nmhdr = reinterpret_cast<const NMHDR *>(lParam);
             if (nmhdr->code == TCN_SELCHANGE)
             {
                 if (nmhdr->hwndFrom == _ctrlTab.getHSelf())
@@ -1147,28 +1154,53 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
             return TRUE;
         }
 
-        case WM_COMMAND :
+        case WM_DPICHANGED:
+        {
+            _dpiManager.setDpiWP(wParam);
+            setPositionDpi(lParam);
+
+            return TRUE;
+        }
+
+        case WM_COMMAND:
         {
             if (HIWORD(wParam) == EN_CHANGE)
             {
-                TCHAR ext[extsLenMax] = { '\0' };
+                wchar_t ext[extsLenMax] = { '\0' };
 				::SendDlgItemMessage(_hSelf, IDC_EXT_EDIT, WM_GETTEXT, extsLenMax, reinterpret_cast<LPARAM>(ext));
                 _pUserLang->_ext = ext;
                 return TRUE;
             }
-            else if (HIWORD(wParam) == CBN_SELCHANGE)
+            else if (HIWORD(wParam) == CBN_SELCHANGE) // HIWORD(wParam) for accelerators is also 1
             {
-                if (LOWORD(wParam) == IDC_LANGNAME_COMBO)
+                switch (LOWORD(wParam))
                 {
-					auto i = ::SendDlgItemMessage(_hSelf, LOWORD(wParam), CB_GETCURSEL, 0, 0);
-                    enableLangAndControlsBy(i);
-                    updateDlg();
+                    case IDC_LANGNAME_COMBO:
+                    {
+                        auto i = ::SendDlgItemMessage(_hSelf, LOWORD(wParam), CB_GETCURSEL, 0, 0);
+                        enableLangAndControlsBy(i);
+                        updateDlg();
+                        return TRUE;
+                    }
+
+                    case IDC_NEXT_TAB:
+                    case IDC_PREV_TAB:
+                    {
+                        const int selTabIdx = _ctrlTab.getNextOrPrevTabIdx(LOWORD(wParam) == IDC_NEXT_TAB);
+                        _ctrlTab.activateAt(selTabIdx);
+                        _ctrlTab.clickedUpdate();
+                        ::SetFocus(_ctrlTab.getHSelf());
+
+                        return TRUE;
+                    }
+
+                    default:
+                        return FALSE;
                 }
-                return TRUE;
             }
             else
             {
-                switch (wParam)
+                switch (LOWORD(wParam))
                 {
                     case IDC_DOCK_BUTTON :
                     {
@@ -1216,15 +1248,15 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                     {
                         int result = nppParam.getNativeLangSpeaker()->messageBox("UDLRemoveCurrentLang",
 							_hSelf,
-							TEXT("Are you sure?"),
-							TEXT("Remove the current language"),
+							L"Are you sure?",
+							L"Remove the current language",
 							MB_YESNO);
 
                         if (result == IDYES)
                         {
                             auto i = ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETCURSEL, 0, 0);
 							const size_t langNameLen = 256;
-							TCHAR langName[langNameLen + 1] = { '\0' };
+							wchar_t langName[langNameLen + 1] = { '\0' };
 							auto cbTextLen = ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETLBTEXTLEN, i, 0);
 							if (static_cast<size_t>(cbTextLen) > langNameLen)
 								return TRUE;
@@ -1253,20 +1285,20 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                     {
                         auto i = ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETCURSEL, 0, 0);
 						const size_t langNameLen = 256;
-						TCHAR langName[langNameLen + 1] = { '\0' };
+						wchar_t langName[langNameLen + 1] = { '\0' };
 						auto cbTextLen = ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETLBTEXTLEN, i, 0);
 						if (static_cast<size_t>(cbTextLen) > langNameLen)
 							return TRUE;
 
 						::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETLBTEXT, i, reinterpret_cast<LPARAM>(langName));
 
-						generic_string strName = pNativeSpeaker->getLocalizedStrFromID("common-name", TEXT("Name"));
-						generic_string strTitle = pNativeSpeaker->getLocalizedStrFromID("userdefined-title-rename", TEXT("Rename Current Language Name"));
+						wstring strName = pNativeSpeaker->getLocalizedStrFromID("common-name", L"Name");
+						wstring strTitle = pNativeSpeaker->getLocalizedStrFromID("userdefined-title-rename", L"Rename Current Language Name");
 
                         StringDlg strDlg;
                         strDlg.init(_hInst, _hSelf, strTitle.c_str(), strName.c_str(), langName, langNameLenMax - 1);
 
-                        TCHAR *newName = (TCHAR *)strDlg.doDialog();
+                        wchar_t *newName = (wchar_t *)strDlg.doDialog();
 
                         if (newName)
                         {
@@ -1274,8 +1306,8 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                             {
 								nppParam.getNativeLangSpeaker()->messageBox("UDLNewNameError",
 									_hSelf,
-									TEXT("This name is used by another language,\rplease give another one."),
-									TEXT("UDL Error"),
+									L"This name is used by another language,\rplease give another one.",
+									L"UDL Error",
 									MB_OK);
                                 ::PostMessage(_hSelf, WM_COMMAND, IDC_RENAME_BUTTON, 0);
                                 return TRUE;
@@ -1312,27 +1344,27 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                             wParam = IDC_ADDNEW_BUTTON;
 
 
-						generic_string strName = pNativeSpeaker->getLocalizedStrFromID("common-name", TEXT("Name"));
-						generic_string strTitle = (wParam == IDC_SAVEAS_BUTTON) ?
-							pNativeSpeaker->getLocalizedStrFromID("userdefined-title-save", TEXT("Save Current Language Name As...")) :
-							pNativeSpeaker->getLocalizedStrFromID("userdefined-title-new", TEXT("Create New Language..."));
+						wstring strName = pNativeSpeaker->getLocalizedStrFromID("common-name", L"Name");
+						wstring strTitle = (wParam == IDC_SAVEAS_BUTTON) ?
+							pNativeSpeaker->getLocalizedStrFromID("userdefined-title-save", L"Save Current Language Name As...") :
+							pNativeSpeaker->getLocalizedStrFromID("userdefined-title-new", L"Create New Language...");
 
                         StringDlg strDlg;
-						strDlg.init(_hInst, _hSelf, strTitle.c_str(), strName.c_str(), TEXT(""), langNameLenMax - 1);
+						strDlg.init(_hInst, _hSelf, strTitle.c_str(), strName.c_str(), L"", langNameLenMax - 1);
 
-                        TCHAR *tmpName = reinterpret_cast<TCHAR *>(strDlg.doDialog());
+                        wchar_t *tmpName = reinterpret_cast<wchar_t *>(strDlg.doDialog());
 
                         if (tmpName && tmpName[0])
                         {
-                            generic_string newNameString(tmpName);
-                            const TCHAR *newName = newNameString.c_str();
+                            wstring newNameString(tmpName);
+                            const wchar_t *newName = newNameString.c_str();
 
                             if (nppParam.isExistingUserLangName(newName))
                             {
 								pNativeSpeaker->messageBox("UDLNewNameError",
 									_hSelf,
-									TEXT("This name is used by another language,\rplease give another one."),
-									TEXT("UDL Error"),
+									L"This name is used by another language,\rplease give another one.",
+									L"UDL Error",
 									MB_OK);
                                 ::PostMessage(_hSelf, WM_COMMAND, IDC_RENAME_BUTTON, 0);
                                 return TRUE;
@@ -1361,8 +1393,8 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                     case IDC_IMPORT_BUTTON :
                     {
                         CustomFileDialog fDlg(_hSelf);
-                        fDlg.setExtFilter(TEXT("UDL"), TEXT(".xml"));
-                        generic_string sourceFile = fDlg.doOpenSingleFileDlg();
+                        fDlg.setExtFilter(L"UDL", L".xml");
+                        wstring sourceFile = fDlg.doOpenSingleFileDlg();
                         if (sourceFile.empty()) break;
 
                         bool isSuccessful = nppParam.importUDLFromFile(sourceFile);
@@ -1371,11 +1403,11 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                             auto i = ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_GETCURSEL, 0, 0);
                             reloadLangCombo();
                             ::SendDlgItemMessage(_hSelf, IDC_LANGNAME_COMBO, CB_SETCURSEL, i, 0);
-                            printStr(TEXT("Import successful."));
+                            printStr(L"Import successful.");
                         }
                         else
                         {
-                            printStr(TEXT("Fail to import."));
+                            printStr(L"Fail to import.");
                         }
                         break;
                     }
@@ -1386,14 +1418,14 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                         if (i2Export == 0)
                         {
                             // maybe a better option would be to simply send IDC_SAVEAS_BUTTON message, and display "Save As..." dialog?
-                            printStr(TEXT("Before exporting, save your language definition by clicking \"Save As...\" button"));
+                            printStr(L"Before exporting, save your language definition by clicking \"Save As...\" button");
                             break;
                         }
 
                         CustomFileDialog fDlg(_hSelf);
-                        fDlg.setExtFilter(TEXT("UDL"), TEXT(".xml"));
+                        fDlg.setExtFilter(L"UDL", L".xml");
 						fDlg.setExtIndex(0);		// 0 Default index else file will be saved without extension
-						generic_string fileName2save = fDlg.doSaveDlg();
+						wstring fileName2save = fDlg.doSaveDlg();
                         if (fileName2save.empty()) break;
 
                         if (i2Export > 0)
@@ -1401,11 +1433,11 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
                             bool isSuccessful = nppParam.exportUDLToFile(i2Export - 1, fileName2save);
                             if (isSuccessful)
                             {
-                                printStr(TEXT("Export successful"));
+                                printStr(L"Export successful");
                             }
                             else
                             {
-                                printStr(TEXT("Fail to export."));
+                                printStr(L"Fail to export.");
                             }
                         }
                         break;
@@ -1533,11 +1565,11 @@ intptr_t CALLBACK UserDefineDialog::run_dlgProc(UINT message, WPARAM wParam, LPA
     return FALSE;
 }
 
-intptr_t CALLBACK StringDlg::run_dlgProc(UINT Message, WPARAM wParam, LPARAM)
+intptr_t CALLBACK StringDlg::run_dlgProc(UINT Message, WPARAM wParam, LPARAM lParam)
 {
     switch (Message)
     {
-        case WM_INITDIALOG :
+        case WM_INITDIALOG:
         {
 			NppDarkMode::autoSubclassAndThemeChildControls(_hSelf);
 
@@ -1558,8 +1590,8 @@ intptr_t CALLBACK StringDlg::run_dlgProc(UINT Message, WPARAM wParam, LPARAM)
 			NativeLangSpeaker *pNativeSpeaker = (NppParameters::getInstance()).getNativeLangSpeaker();
 			if (pNativeSpeaker)
 			{
-				generic_string ok = pNativeSpeaker->getLocalizedStrFromID("common-ok", TEXT("OK"));
-				generic_string cancel = pNativeSpeaker->getLocalizedStrFromID("common-cancel", TEXT("Cancel"));
+				wstring ok = pNativeSpeaker->getLocalizedStrFromID("common-ok", L"OK");
+				wstring cancel = pNativeSpeaker->getLocalizedStrFromID("common-cancel", L"Cancel");
 
 				::SetDlgItemText(_hSelf, IDOK, ok.c_str());
 				::SetDlgItemText(_hSelf, IDCANCEL, cancel.c_str());
@@ -1609,13 +1641,21 @@ intptr_t CALLBACK StringDlg::run_dlgProc(UINT Message, WPARAM wParam, LPARAM)
 			return TRUE;
 		}
 
-        case WM_COMMAND :
+        case WM_DPICHANGED:
+        {
+            _dpiManager.setDpiWP(wParam);
+            setPositionDpi(lParam);
+
+            return TRUE;
+        }
+
+        case WM_COMMAND:
         {
             switch (wParam)
             {
                 case IDOK :
                 {
-                    TCHAR tmpName[langNameLenMax] = { '\0' };
+                    wchar_t tmpName[langNameLenMax] = { '\0' };
                     ::GetDlgItemText(_hSelf, IDC_STRING_EDIT, tmpName, langNameLenMax);
                     _textValue = tmpName;
                     ::EndDialog(_hSelf, reinterpret_cast<intptr_t>(_textValue.c_str()));
@@ -1665,7 +1705,7 @@ LRESULT StringDlg::customEditProc(HWND hEdit, UINT msg, WPARAM wParam, LPARAM lP
 		else
 		{
 			// If Key pressed not permitted, then return 0
-			if (!pSelf->isAllowed(reinterpret_cast<TCHAR*>(&wParam)))
+			if (!pSelf->isAllowed(reinterpret_cast<wchar_t*>(&wParam)))
 				return 0;
 		}
 		break;
@@ -1680,7 +1720,7 @@ LRESULT StringDlg::customEditProc(HWND hEdit, UINT msg, WPARAM wParam, LPARAM lP
 	return CallWindowProc(pSelf->_oldEditProc, hEdit, msg, wParam, lParam);
 }
 
-bool StringDlg::isAllowed([[maybe_unused]] const generic_string & txt)
+bool StringDlg::isAllowed([[maybe_unused]] const wstring & txt)
 {
 #ifndef __MINGW32__
 	for (auto ch : txt)
@@ -1694,22 +1734,26 @@ bool StringDlg::isAllowed([[maybe_unused]] const generic_string & txt)
 
 void StringDlg::HandlePaste(HWND hEdit)
 {
-	if (OpenClipboard(hEdit))
+	if (!::OpenClipboard(hEdit))
+		return;
+
+	HANDLE hClipboardData = ::GetClipboardData(CF_UNICODETEXT);
+	if (!hClipboardData)
 	{
-		HANDLE hClipboardData = GetClipboardData(CF_UNICODETEXT);
-		if (NULL != hClipboardData)
-		{
-			LPTSTR pszText = static_cast<LPTSTR>(GlobalLock(hClipboardData));
-			if (NULL != pszText && isAllowed(pszText))
-			{
-				SendMessage(hEdit, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(pszText));
-			}
-
-			GlobalUnlock(hClipboardData);
-		}
-
-		CloseClipboard();
+		::CloseClipboard();
+		return;
 	}
+
+	LPTSTR pszText = static_cast<LPTSTR>(::GlobalLock(hClipboardData));
+	if (pszText)
+	{
+		if (isAllowed(pszText))
+			::SendMessage(hEdit, EM_REPLACESEL, TRUE, reinterpret_cast<LPARAM>(pszText));
+
+		::GlobalUnlock(hClipboardData);
+	}
+	
+	::CloseClipboard();
 }
 
 void StylerDlg::move2CtrlRight(HWND hwndDlg, int ctrlID, HWND handle2Move, int handle2MoveWidth, int handle2MoveHeight)
@@ -1718,7 +1762,7 @@ void StylerDlg::move2CtrlRight(HWND hwndDlg, int ctrlID, HWND handle2Move, int h
     RECT rc{};
     ::GetWindowRect(::GetDlgItem(hwndDlg, ctrlID), &rc);
 
-    p.x = rc.right + NppParameters::getInstance()._dpiManager.scaleX(5);
+    p.x = rc.right + DPIManagerV2::scale(5, hwndDlg);
     p.y = rc.top + ((rc.bottom - rc.top) / 2) - handle2MoveHeight / 2;
 
     ::ScreenToClient(hwndDlg, &p);
@@ -1727,7 +1771,7 @@ void StylerDlg::move2CtrlRight(HWND hwndDlg, int ctrlID, HWND handle2Move, int h
 
 intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    StylerDlg * dlg = (StylerDlg *)::GetProp(hwnd, TEXT("Styler dialog prop"));
+    StylerDlg * dlg = (StylerDlg *)::GetProp(hwnd, L"Styler dialog prop");
     NppParameters& nppParam = NppParameters::getInstance();
 
     switch (message)
@@ -1740,8 +1784,8 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
             NativeLangSpeaker *pNativeLangSpeaker = nppParam.getNativeLangSpeaker();
             pNativeLangSpeaker->changeUserDefineLangPopupDlg(hwnd);
 
-            ::SetProp(hwnd, TEXT("Styler dialog prop"), (HANDLE)lParam);
-            dlg = (StylerDlg *)::GetProp(hwnd, TEXT("Styler dialog prop"));
+            ::SetProp(hwnd, L"Styler dialog prop", (HANDLE)lParam);
+            dlg = (StylerDlg *)::GetProp(hwnd, L"Styler dialog prop");
             Style & style = SharedParametersDialog::_pUserLang->_styles.getStyler(dlg->_stylerIndex);
 
             // move dialog over UDL GUI (position 0,0 of UDL window) so it wouldn't cover the code
@@ -1757,14 +1801,14 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
 
             // for the font size combo
             HWND hFontSizeCombo = ::GetDlgItem(hwnd, IDC_STYLER_COMBO_FONT_SIZE);
-            for (size_t j = 0 ; j < int(sizeof(fontSizeStrs))/(3*sizeof(TCHAR)) ; ++j)
+            for (size_t j = 0 ; j < int(sizeof(fontSizeStrs))/(3*sizeof(wchar_t)) ; ++j)
 				::SendMessage(hFontSizeCombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(fontSizeStrs[j]));
 
-            TCHAR size[10] = { '\0' };
+            wchar_t size[10] = { '\0' };
             if (style._fontSize == -1)
                 size[0] = '\0';
             else
-                wsprintf(size, TEXT("%d"),style._fontSize);
+                wsprintf(size, L"%d",style._fontSize);
 
 			auto i = ::SendMessage(hFontSizeCombo, CB_FINDSTRINGEXACT, static_cast<WPARAM>(-1), reinterpret_cast<LPARAM>(size));
             if (i != CB_ERR)
@@ -1772,7 +1816,7 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
 
             // for the font name combo
             HWND hFontNameCombo = ::GetDlgItem(hwnd, IDC_STYLER_COMBO_FONT_NAME);
-            const std::vector<generic_string> & fontlist = nppParam.getFontList();
+            const std::vector<wstring> & fontlist = nppParam.getFontList();
             for (size_t j = 0, len = fontlist.size() ; j < len ; ++j)
             {
 				auto k = ::SendMessage(hFontNameCombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(fontlist[j].c_str()));
@@ -1801,12 +1845,9 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
             dlg->_pBgColour->setEnabled(isBgEnabled);
             ::SendDlgItemMessage(hwnd, IDC_STYLER_CHECK_BG_TRANSPARENT, BM_SETCHECK, !isBgEnabled, 0);
 
-            int w = nppParam._dpiManager.scaleX(25);
-            int h = nppParam._dpiManager.scaleY(25);
-
-            dlg->move2CtrlRight(hwnd, IDC_STYLER_FG_STATIC, dlg->_pFgColour->getHSelf(), w, h);
-            dlg->move2CtrlRight(hwnd, IDC_STYLER_BG_STATIC, dlg->_pBgColour->getHSelf(), w, h);
-
+            const int moveSize = DPIManagerV2::scale(25, hwnd);
+            dlg->move2CtrlRight(hwnd, IDC_STYLER_FG_STATIC, dlg->_pFgColour->getHSelf(), moveSize, moveSize);
+            dlg->move2CtrlRight(hwnd, IDC_STYLER_BG_STATIC, dlg->_pBgColour->getHSelf(), moveSize, moveSize);
 
             dlg->_pFgColour->display();
             dlg->_pBgColour->display();
@@ -1853,7 +1894,18 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
             return TRUE;
         }
 
-        case WM_COMMAND :
+        case WM_DPICHANGED:
+        {
+            const int moveSize = DPIManagerV2::scale(25, hwnd);
+            dlg->move2CtrlRight(hwnd, IDC_STYLER_FG_STATIC, dlg->_pFgColour->getHSelf(), moveSize, moveSize);
+            dlg->move2CtrlRight(hwnd, IDC_STYLER_BG_STATIC, dlg->_pBgColour->getHSelf(), moveSize, moveSize);
+
+            DPIManagerV2::setPositionDpi(lParam, hwnd, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+            return TRUE;
+        }
+
+        case WM_COMMAND:
         {
 			if (dlg == nullptr)
 				return FALSE;
@@ -1867,7 +1919,7 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
                     if (i != 0)
                     {
 						const size_t intStrLen = 3;
-						TCHAR intStr[intStrLen] = { '\0' };
+						wchar_t intStr[intStrLen] = { '\0' };
 						auto lbTextLen = ::SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETLBTEXTLEN, i, 0);
 						if (static_cast<size_t>(lbTextLen) > intStrLen - 1)
 							return TRUE;
@@ -1877,7 +1929,7 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
                             style._fontSize = -1;
                         else
                         {
-                            TCHAR *finStr = nullptr;
+                            wchar_t *finStr = nullptr;
                             style._fontSize = wcstol(intStr, &finStr, 10);
                             if (*finStr != '\0')
                                 style._fontSize = -1;
@@ -1890,7 +1942,7 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
                 }
                 else if (LOWORD(wParam) == IDC_STYLER_COMBO_FONT_NAME)
                 {
-                    style._fontName = (TCHAR *)::SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETITEMDATA, i, 0);
+                    style._fontName = (wchar_t *)::SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETITEMDATA, i, 0);
                 }
 
                 // show changes to user, re-color document
@@ -1908,14 +1960,14 @@ intptr_t CALLBACK StylerDlg::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPA
                     if (SharedParametersDialog::_pScintilla->getCurrentBuffer()->getLangType() == L_USER)
                         SharedParametersDialog::_pScintilla->styleChange();
 
-                    ::RemoveProp(hwnd, TEXT("Styler dialog prop"));
+                    ::RemoveProp(hwnd, L"Styler dialog prop");
                     ::EndDialog(hwnd, IDCANCEL);
                     return TRUE;
                 }
 
                 if (wParam == IDOK)
                 {
-                    ::RemoveProp(hwnd, TEXT("Styler dialog prop"));
+                    ::RemoveProp(hwnd, L"Styler dialog prop");
                     ::EndDialog(hwnd, IDOK);
                     return TRUE;
                 }

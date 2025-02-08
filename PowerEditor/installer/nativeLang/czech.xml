@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-	- last change:  Notepad++ 8.5.8  13/Oct/2023  by Ondřej Müller (mullero@email.cz)
+	- last change:  Notepad++ 8.7.6  18/Jan/2025  by Ondřej Müller (mullero@email.cz)
 	- N++ Community QA:  https://notepad-plus-plus.org/community/topic/87/czech-translations
 	- contributors:  Ondřej Müller (mullero@email.cz), Tomáš Hrouda (gobbet@centrum.cz), Martin Darebný (darBis)
 	- the most recent version of this file can be downloaded from the project master-branch here: https://github.com/notepad-plus-plus/notepad-plus-plus/blob/master/PowerEditor/installer/nativeLang/czech.xml
 -->
 <NotepadPlus>
-	<Native-Langue name="Čeština" filename="czech.xml" version="8.5.8">
+	<Native-Langue name="Čeština" filename="czech.xml" version="8.7.6">
 		<Menu>
 			<Main>
 				<!-- Main Menu Entries -->
@@ -41,6 +41,8 @@
 					<Item subMenuId="edit-blankOperations" name="Operace s &amp;prázdnými znaky"/>
 					<Item subMenuId="edit-pasteSpecial" name="Vložit &amp;nestandardně"/>
 					<Item subMenuId="edit-onSelection" name="Vybraný te&amp;xt"/>
+					<Item subMenuId="edit-multiSelectALL" name="Vícenásobný výběr VŠE"/>
+					<Item subMenuId="edit-multiSelectNext" name="Vícenásobný výběr Další"/>
 					<Item subMenuId="search-changeHistory" name="Historie změn"/>
 					<Item subMenuId="search-markAll" name="Ozn&amp;ačit všechny výskyty tokenu stylem"/>
 					<Item subMenuId="search-markOne" name="&amp;Označit token (jeden) stylem"/>
@@ -89,7 +91,7 @@
 					<Item id="41002" name="&amp;Otevřít..."/>
 					<Item id="41003" name="Zavřít &amp;aktuální"/>
 					<Item id="41004" name="Za&amp;vřít vše"/>
-					<Item id="41005" name="Zavřít vše KROMĚ aktuálního dokumentu"/>
+					<Item id="41005" name="Zavřít vše KROMĚ aktuálního"/>
 					<Item id="41006" name="&amp;Uložit"/>
 					<Item id="41007" name="Uložit v&amp;še"/>
 					<Item id="41008" name="Uložit &amp;jako..."/>
@@ -111,6 +113,7 @@
 					<Item id="41023" name="Otevřít v &amp;implicitním prohlížeči"/>
 					<Item id="41024" name="Zavřít všechny nezměněné"/>
 					<Item id="41025" name="Složka jako Pracovní plocha"/>
+					<Item id="41026" name="Zavřít vše KROMĚ připnutých"/>
 					<Item id="42001" name="Vyjmou&amp;t"/>
 					<Item id="42002" name="&amp;Kopírovat"/>
 					<Item id="42003" name="&amp;Zpět"/>
@@ -199,6 +202,16 @@
 					<Item id="42087" name="Kopírovat všechny názvy souborů"/>
 					<Item id="42088" name="Kopírovat všechny cesty souborů"/>
 					<Item id="42089" name="Vyber začátek/konec bloku v Sloupcovém režimu"/>
+					<Item id="42090" name="Nerozlišovat VELKÁ/malá &amp;&amp; Celá slova"/>
+					<Item id="42091" name="Rozlišovat pouze VELKÁ/malá"/>
+					<Item id="42092" name="Rozlišovat pouze Celá slova"/>
+					<Item id="42093" name="Rozlišovat VELKÁ/malá &amp;&amp; Celá slova"/>
+					<Item id="42094" name="Nerozlišovat VELKÁ/malá &amp;&amp; Celá slova"/>
+					<Item id="42095" name="Rozlišovat pouze VELKÁ/malá"/>
+					<Item id="42096" name="Rozlišovat pouze Celá slova"/>
+					<Item id="42097" name="Rozlišovat VELKÁ/malá &amp;&amp; Celá slova"/>
+					<Item id="42098" name="Vrátit naposledy přidaný vícenásobný výběr"/>
+					<Item id="42099" name="Přeskočit aktuální &amp;&amp; přejít na další vícenásobný výběr"/>
 					<Item id="43001" name="&amp;Najít..."/>
 					<Item id="43002" name="Najít &amp;další"/>
 					<Item id="43003" name="Nah&amp;radit..."/>
@@ -235,13 +248,13 @@
 					<Item id="43035" name="3. styl"/>
 					<Item id="43036" name="4. styl"/>
 					<Item id="43037" name="5. styl"/>
-					<Item id="43038" name="Styl značení dialogu 'Označit'"/>
+					<Item id="43038" name="Styl značení dialogu &quot;Označit&quot;"/>
 					<Item id="43039" name="1. styl"/>
 					<Item id="43040" name="2. styl"/>
 					<Item id="43041" name="3. styl"/>
 					<Item id="43042" name="4. styl"/>
 					<Item id="43043" name="5. styl"/>
-					<Item id="43044" name="Styl značení dialogu 'Označit'"/>
+					<Item id="43044" name="Styl značení dialogu &quot;Označit&quot;"/>
 					<Item id="43045" name="Okno &amp;s výsledky vyhledávání"/>
 					<Item id="43046" name="D&amp;alší vyhledaný výsledek"/>
 					<Item id="43047" name="Př&amp;edchozí vyhledaný výsledek"/>
@@ -250,7 +263,7 @@
 					<Item id="43050" name="Inverze záložky"/>
 					<Item id="43051" name="Odstranit řádky neoznačené záložkami"/>
 					<Item id="43052" name="Najít znaky z rozsa&amp;hu..."/>
-					<Item id="43053" name="Vybrat vše &amp;mezi souvisejícími závorkami"/>
+					<Item id="43053" name="Vybrat vše &amp;mezi souvisejícími závorkami {}, [] nebo ()"/>
 					<Item id="43054" name="&amp;Označit..."/>
 					<Item id="43055" name="1. stylem"/>
 					<Item id="43056" name="2. stylem"/>
@@ -258,7 +271,7 @@
 					<Item id="43058" name="4. stylem"/>
 					<Item id="43059" name="5. stylem"/>
 					<Item id="43060" name="Všemi styly"/>
-					<Item id="43061" name="Stylem značení dialogu 'Označit'"/>
+					<Item id="43061" name="Stylem značení dialogu &quot;Označit&quot;"/>
 					<Item id="43062" name="Použít 1. styl"/>
 					<Item id="43063" name="Použít 2. styl"/>
 					<Item id="43064" name="Použít 3. styl"/>
@@ -320,6 +333,8 @@
 					<Item id="44113" name="Označit barvou 3"/>
 					<Item id="44114" name="Označit barvou 4"/>
 					<Item id="44115" name="Označit barvou 5"/>
+					<Item id="44116" name="První karta"/>
+					<Item id="44117" name="Poslední karta"/>
 					<Item id="44130" name="Zobrazit netisknutelné znaky"/>
 					<Item id="44131" name="Zobrazit řídící znaky a &amp;&amp; Unicode EOLy"/>
 					<Item id="45001" name="Konvertovat do formátu Windows"/>
@@ -345,6 +360,8 @@
 					<Item id="10002" name="Vytvořit kopii v druhém náhledu"/>
 					<Item id="10003" name="Přesunout do nové instance"/>
 					<Item id="10004" name="Otevřít v nové instanci"/>
+					<Item id="10005" name="Přesunout na začátek"/>
+					<Item id="10006" name="Přesunout na konec"/>
 					<Item id="46001" name="Upravit styl..."/>
 					<Item id="46015" name="MS-DOS styl"/>
 					<Item id="46016" name="Normální text"/>
@@ -405,17 +422,19 @@
 					<Item id="11005" name="Cesty - od Z do A"/>
 					<Item id="11006" name="Typu - od A do Z"/>
 					<Item id="11007" name="Typu - od Z do A"/>
-					<Item id="11008" name="Velikosti - od menších k větším"/>
-					<Item id="11009" name="Velikosti - od větších k menším"/>
+					<Item id="11008" name="Délky obsahu - vzestupně"/>
+					<Item id="11009" name="Délky obsahu - sestupně"/>
 				</Commands>
 			</Main>
 			<TabBar>
 				<Item CMDID="41003" name="Zavřít"/>
 				<Item CMDID="0" name="Zavřít vícero souborů/karet"/>
-				<Item CMDID="41005" name="Zavřít vše kromě aktuálního"/>
+				<Item CMDID="41005" name="Zavřít vše KROMĚ aktuálního"/>
+				<Item CMDID="41026" name="Zavřít vše KROMĚ připnutých"/>
 				<Item CMDID="41009" name="Zavřít vše nalevo"/>
 				<Item CMDID="41018" name="Zavřít vše napravo"/>
 				<Item CMDID="41024" name="Zavřít všechny nezměněné"/>
+				<Item CMDID="44048" name="Připnout kartu" alternativeName="Odepnout kartu"/>
 				<Item CMDID="41006" name="Uložit"/>
 				<Item CMDID="41008" name="Uložit jako..."/>
 				<Item CMDID="1" name="Otevřít v"/>
@@ -428,7 +447,7 @@
 				<Item CMDID="41014" name="Znovu načíst"/>
 				<Item CMDID="41010" name="Tisk..."/>
 				<Item CMDID="42028" name="Pouze pro čtení"/>
-				<Item CMDID="42033" name="Vymazat příznak 'Pouze pro čtení'"/>
+				<Item CMDID="42033" name="Vymazat příznak &quot;Pouze pro čtení&quot;"/>
 				<Item CMDID="2" name="Kopírovat do Schránky"/>
 				<Item CMDID="42029" name="Kopírovat název souboru i s cestou"/>
 				<Item CMDID="42030" name="Kopírovat název souboru"/>
@@ -438,6 +457,8 @@
 				<Item CMDID="10002" name="Vytvořit kopii v druhém náhledu"/>
 				<Item CMDID="10003" name="Přesunout do nové instance"/>
 				<Item CMDID="10004" name="Otevřít v nové instanci"/>
+				<Item CMDID="10005" name="Přesunout na začátek"/>
+				<Item CMDID="10006" name="Přesunout na konec"/>
 				<Item CMDID="4" name="Označit kartu barvou"/>
 				<Item CMDID="44111" name="Označit barvou 1"/>
 				<Item CMDID="44112" name="Označit barvou 2"/>
@@ -487,7 +508,6 @@
 				<Item id="1658" name="Ve všech podadresářích"/>
 				<Item id="1659" name="Ve skrytých adresářích"/>
 				<Item id="1660" name="Nahradit v souborech"/>
-				<Item id="1661" name="Podle aktuál. dokumentu"/>
 				<Item id="1662" name="Projektový panel 1"/>
 				<Item id="1663" name="Projektový panel 2"/>
 				<Item id="1664" name="Projektový panel 3"/>
@@ -508,9 +528,9 @@
 			</Find>
 
 			<IncrementalFind title="">
-				<Item id="1681" name="Najít"/>
-				<Item id="1685" name="Rozlišovat velká a malá p."/>
-				<Item id="1690" name="Zvýraznit všechny"/>
+				<Item id="1681" name="Najít:"/>
+				<Item id="1685" name="&amp;Rozlišovat velikost písmen"/>
+				<Item id="1690" name="&amp;Zvýraznit všechny"/>
 			</IncrementalFind>
 
 			<FindCharsInRange title="Najít znaky z rozsahu...">
@@ -624,14 +644,15 @@
 					<Item id="2219" name="Standardní klíčová slova"/>
 					<Item id="2221" name="Vlastní klíčová slova"/>
 					<Item id="2225" name="Syntaxe:"/>
-					<Item id="2226" name="Povolit globálně barvu popředí"/>
-					<Item id="2227" name="Povolit globálně barvu pozadí"/>
-					<Item id="2228" name="Povolit globálně font"/>
-					<Item id="2229" name="Povolit globálně velikost písma"/>
-					<Item id="2230" name="Povolit globálně tučný styl písma"/>
-					<Item id="2231" name="Povolit globálně ležatý styl písma"/>
-					<Item id="2232" name="Povolit globálně podtržený styl písma"/>
+					<Item id="2226" name="Vynutit barvu popředí pro všechny styly"/>
+					<Item id="2227" name="Vynutit barvu pozadí pro všechny styly"/>
+					<Item id="2228" name="Vynutit písmo pro všechny styly"/>
+					<Item id="2229" name="Vynutit velikost písma pro všechny styly"/>
+					<Item id="2230" name="Vynutit tučné písmo pro všechny styly"/>
+					<Item id="2231" name="Vynutit kurzívu pro všechny styly"/>
+					<Item id="2232" name="Vynutit podtržení pro všechny styly"/>
 					<Item id="2234" name="Přejít do nastavení"/>
+					<Item id="2235" name="Co znamená &quot;Global override&quot;?"/>
 				</SubDialog>
 			</StyleConfig>
 			
@@ -679,20 +700,20 @@
 					<Item id="43035" name="Předchozí označení 3. stylem"/>
 					<Item id="43036" name="Předchozí označení 4. stylem"/>
 					<Item id="43037" name="Předchozí označení 5. stylem"/>
-					<Item id="43038" name="Předchozí označení stylem z dialogu 'Označit'"/>
+					<Item id="43038" name="Předchozí označení stylem z dialogu &quot;Označit&quot;"/>
 					<Item id="43039" name="Další označení 1. stylem"/>
 					<Item id="43040" name="Další označení 2. stylem"/>
 					<Item id="43041" name="Další označení 3. stylem"/>
 					<Item id="43042" name="Další označení 4. stylem"/>
 					<Item id="43043" name="Další označení 5. stylem"/>
-					<Item id="43044" name="Další označení stylem z dialogu 'Označit'"/>
+					<Item id="43044" name="Další označení stylem z dialogu &quot;Označit&quot;"/>
 					<Item id="43055" name="Kopírovat text označený 1. stylem"/>
 					<Item id="43056" name="Kopírovat text označený 2. stylem"/>
 					<Item id="43057" name="Kopírovat text označený 3. stylem"/>
 					<Item id="43058" name="Kopírovat text označený 4. stylem"/>
 					<Item id="43059" name="Kopírovat text označený 5. stylem"/>
 					<Item id="43060" name="Kopírovat text označený všemi styly"/>
-					<Item id="43061" name="Kopírovat text označený stylem dialogu 'Označit'"/>
+					<Item id="43061" name="Kopírovat text označený stylem dialogu &quot;Označit&quot;"/>
 					<Item id="43062" name="Označit jeden 1. stylem"/>
 					<Item id="43063" name="Označit jeden 2. stylem"/>
 					<Item id="43064" name="Označit jeden 3. stylem"/>
@@ -740,8 +761,8 @@
 					<Item id="11005" name="Setřídit podle: Cesty - od Z do A"/>
 					<Item id="11006" name="Setřídit podle: Typu - od A do Z"/>
 					<Item id="11007" name="Setřídit podle: Typu - od Z do A"/>
-					<Item id="11008" name="Setřídit podle: Velikosti - od menších k větším"/>
-					<Item id="11009" name="Setřídit podle: Velikosti - od větších k menším"/>
+					<Item id="11008" name="Setřídit podle: Délky obsahu - vzestupně"/>
+					<Item id="11009" name="Setřídit podle: Délky obsahu - sestupně"/>
 				</MainCommandNames>
 			</ShortcutMapper>
 			
@@ -968,38 +989,40 @@
 					<Item id="6103" name="Fluent UI: malé ikony"/>
 					<Item id="6104" name="Fluent UI: velké ikony"/>
 					<Item id="6105" name="Standardní: malé ikony"/>
-					<Item id="6106" name="Lišta záložek"/>
+					<Item id="6106" name="Lišta karet (tab) dokumentů"/>
 					<Item id="6107" name="Zmenšit"/>
-					<Item id="6108" name="Uzamknout (nelze přetahovat záložky)"/>
-					<Item id="6109" name="Znevýraznit neaktivní záložky"/>
-					<Item id="6110" name="Zobrazovat barevný pruh na aktivní záložce"/>
-					<Item id="6112" name="Přidat zavírací tlačítko každé záložce"/>
-					<Item id="6113" name="Dvojité kliknutí zavře záložku"/>
+					<Item id="6108" name="Uzamknout (nelze přetahovat karty)"/>
+					<Item id="6109" name="Změnit barvu pozadí neaktivní karty"/>
+					<Item id="6110" name="Zobrazovat barevný pruh na aktivní kartě"/>
+					<Item id="6111" name="Zobrazovat tlačítka i na neaktivních kartách"/>
+					<Item id="6112" name="Přidat zavírací tlačítko každé kartě"/>
+					<Item id="6113" name="Dvojité kliknutí zavře kartu"/>
 					<Item id="6114" name="Povolit přepínání mezi dokumenty"/>
+					<Item id="6115" name="Povolit připínání karet"/>
 					<Item id="6116" name="Zapamatovat si poslední používaný adresář"/>
 					<Item id="6117" name="Používat historii dokumentů"/>
 					<Item id="6118" name="Skrýt"/>
 					<Item id="6119" name="Více řad"/>
 					<Item id="6120" name="Vertikální"/>
 					<Item id="6121" name="Ukončit při uzavření poslední karty"/>
-					<Item id="6122" name="Skrýt menu (klávesa Alt nebo F10 slouží jako přepínač)"/>
+					<Item id="6122" name="Skrýt (klávesa Alt nebo F10 slouží jako přepínač)"/>
 					<Item id="6123" name="Lokalizace"/>
 					<Item id="6128" name="Alternativní ikony"/>
 					<Item id="6129" name="Fluent UI: malé ikony s výplní"/>
 					<Item id="6130" name="Fluent UI: velké ikony s výplní"/>
 					<Item id="6131" name="Hlavní menu"/>
-					<Item id="6132" name="Skrýt ovládací prvky ＋ ▼ ✕ menu vpravo nahoře (vyžaduje restart Notepadu++)"/>
+					<Item id="6132" name="Skrýt ovládací prvky ＋ ▼ ✕"/>
 					<Item id="6133" name="Stavový řádek"/>
 					<Item id="6134" name="Skrýt"/>
 				</Global>
-				<Scintillas title="Editace">
+				<Scintillas title="Editace 1">
+					<Item id="6214" name="Povolit Kopírování/Vyjmutí celého řádku bez výběru"/>
 					<Item id="6215" name="Povolit vyhlazování fontu"/>
 					<Item id="6216" name="Nastavení kurzoru"/>
 					<Item id="6217" name="Šířka:"/>
 					<Item id="6219" name="Rychlost blikání:"/>
 					<Item id="6221" name="R"/>
 					<Item id="6222" name="P"/>
-					<Item id="6225" name="Povolit vícenásobnou editaci (Ctrl+Myš kliknutí/výběr)"/>
 					<Item id="6227" name="Zalomení řádky"/>
 					<Item id="6228" name="Implicitní"/>
 					<Item id="6229" name="Jen zarovnání"/>
@@ -1014,7 +1037,9 @@
 					<Item id="6653" name="Zvýrazněné pozadí"/>
 					<Item id="6654" name="Orámování"/>
 					<Item id="6655" name="tloušťka:"/>
-					<Item id="6247" name="Konce řádků (CRLF)"/><!-- Don't translate "(CRLF)" -->
+				</Scintillas>
+				<Scintillas2 title="Editace 2">
+					<Item id="6247" name="EOL - konce řádků (CRLF)"/><!-- Don't translate "(CRLF)" -->
 					<Item id="6248" name="Implicitní"/>
 					<Item id="6249" name="Barva prostého textu"/>
 					<Item id="6250" name="Vlastní barva"/>
@@ -1022,8 +1047,13 @@
 					<Item id="6254" name="Zkratka"/>
 					<Item id="6255" name="Kód Unicode"/>
 					<Item id="6256" name="Vlastní barva"/>
-					<Item id="6258" name="Aplikovat na C0, C1 a &amp;&amp; Unicode EOLy"/>
-				</Scintillas>
+					<Item id="6258" name="Aplikovat nastavení vzhledu na C0, C1 a &amp;&amp; Unicode EOLy"/>
+					<Item id="6259" name="Zabránit vkládání řídících znaků (kódy C0) do dokumentu"/>
+					<Item id="6260" name="Vzhled"/>
+					<Item id="6521" name="Vícenásobná editace"/>
+					<Item id="6522" name="Povolit vícenásobnou editaci (Ctrl+Myš kliknutí/výběr)"/>
+					<Item id="6523" name="Povolit výběr sloupců pro vícenásobnou editaci"/>
+				</Scintillas2>
 				<DarkMode title="Tmavý režim">
 					<Item id="7102" name="Černý"/>
 					<Item id="7103" name="Červený"/>
@@ -1065,15 +1095,15 @@
 					<Item id="6211" name="Nastavení svislé vodící čáry"/>
 					<Item id="6212" name="Nerušivý mód"/>
 					<Item id="6213" name="Režim s pozadím"/>
-					<Item id="6223" name="Zobrazit historii změn"/>
+					<Item id="6223" name="Zobrazit na okraji"/>
 					<Item id="6226" name="Žádný"/>
 					<Item id="6231" name="Šířka okraje"/>
 					<Item id="6235" name="Bez okraje"/>
-					<Item id="6237" name="Přidejte Vaši sloupcovou značku poukázáním na její pozici (decimální číslo).
-Můžete definovat více značek sloupců použitím více čísel oddělených prázdnými znaky."/>
 					<Item id="6291" name="Číslo řádku"/>
 					<Item id="6292" name="Dynamická šířka"/>
 					<Item id="6293" name="Konstantní šířka"/>
+					<Item id="6295" name="Historie změn"/>
+					<Item id="6296" name="Zobrazit v textu"/>
 				</MarginsBorderEdge>
 				<NewDoc title="Nový dokument">
 					<Item id="6401" name="Formát"/>
@@ -1108,12 +1138,21 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 					<Item id="6506" name="Nepoužívané syntaxe"/>
 					<Item id="6507" name="Použít kompaktní menu pro syntaxe"/>
 					<Item id="6508" name="Nabídka syntaxí"/>
-					<Item id="6301" name="Nastavení tabulátoru"/>
-					<Item id="6302" name="Zaměnit za mezery"/>
-					<Item id="6303" name="Velikost tabulátoru:"/>
-					<Item id="6510" name="Použít implicitní"/>
 					<Item id="6335" name="Zpětné lomítko je escape znak pro SQL"/>
 				</Language>
+				<Indentation title="Odsazování">
+					<Item id="6301" name="Nastavení odsazení"/>
+					<Item id="6302" name="Mezerami"/>
+					<Item id="6303" name="Velikost:"/>
+					<Item id="6310" name="Odsazovat:"/>
+					<Item id="6311" name="Tabulátorem"/>
+					<Item id="6510" name="Použít implicitní"/>
+					<Item id="6512" name="Klávesou Backspace zmenšovat odsazení místo odstranění pouhé jedné mezery"/>
+					<Item id="7161" name="Automatické odsazování"/>
+					<Item id="7162" name="Žádné"/>
+					<Item id="7163" name="Základní"/>
+					<Item id="7164" name="Pokročilé"/>
+				</Indentation>
 				<Highlighting title="Zvýrazňování">
 					<Item id="6326" name="Povolit"/>
 					<Item id="6327" name="Povolit"/>
@@ -1173,11 +1212,12 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 					<Item id="6903" name="Dialog Najít zůstane otevřen po vyhledávání s výstupem do okna s výsledky"/>
 					<Item id="6904" name="Potvrzovat příkaz Zaměnit vše ve všech otevřených dokumentech"/>
 					<Item id="6905" name="Nahradit: Nepřesunovat se při nahrazení výrazu k následujícímu výskytu"/>
-					<Item id="6906" name="Okno s výsledky vyhledávání: zobrazovat pouze jeden záznam s nálezy na řádku"/>
-					<Item id="6907" name="Při vyvolání dialogového okna 'Najít'"/>
+					<Item id="6906" name="Okno s výsledky vyhledávání: zobrazovat pouze jeden záznam s nálezy na řádku, pokud je to možné"/>
+					<Item id="6907" name="Při vyvolání dialogového okna &quot;Najít&quot;"/>
 					<Item id="6908" name="Předvyplnit vyhledávací pole označeným textem"/>
 					<Item id="6909" name="Když není nic označeno, předvyplnit slovem na pozici kurzoru"/>
-					<Item id="6910" name="Minimální délka pro automatické zaškrtávaní 'Ve vybraném'"/>
+					<Item id="6910" name="Minimální délka pro automatické zaškrtávaní &quot;Ve vybraném&quot;:"/>
+					<Item id="6913" name="Předvyplnit pole &quot;Adresář:&quot; v dialogu &quot;Najít v souborech&quot; podle aktivního dokumentu"/>
 				</Searching>
 				<RecentFilesHistory title="Historie posl. souborů">
 					<Item id="6304" name="Historie posledních souborů"/>
@@ -1195,11 +1235,15 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 						<Element name="Povoleno pro všechny otevřené soubory"/>
 						<Element name="Zakázáno"/>
 					</ComboBox>
+					<ComboBox id="6307">
+						<Element name="Nepoužívat"/>
+						<Element name="Minimalizovat do"/>
+						<Element name="Zavírat do"/>
+						<Element name="Minimalizovat a Zavírat do"/>
+					</ComboBox>
 					<Item id="6114" name="Povolit přepínání"/>
-					<Item id="6115" name="Automatické odsazování"/>
 					<Item id="6117" name="Povolit MRU (nedávno použité)"/>
-					<Item id="6307" name="Povolit pro všechny TABy"/>
-					<Item id="6308" name="Minimalizovat do oznamovací oblasti"/>
+					<Item id="6308" name="oznamovací oblast"/>
 					<Item id="6312" name="Automatická detekce stavu souboru"/>
 					<Item id="6313" name="Aktualizovat skrytě"/>
 					<Item id="6322" name="Přípona souboru relace:"/>
@@ -1214,7 +1258,7 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 					<Item id="6346" name="Na přehledné mapě dokumentu"/>
 					<Item id="6349" name="Používat DirectWrite (může zlepšit zobrazení speciálních znaků, vyžadován restart Notepadu++)"/>
 					<Item id="6360" name="Ztlumit všechny zvuky"/>
-					<Item id="6361" name="Povolit potvrzovací dialog 'Uložit všechny'"/>
+					<Item id="6361" name="Povolit potvrzovací dialog &quot;Uložit všechny&quot;"/>
 				</MISC>
 				<Backup title="Zálohování">
 					<Item id="6219" name="Uživatelsky definovaný adresář pro zálohování"/>
@@ -1227,12 +1271,12 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 					<Item id="6804" name="Uživatelský adresář pro zálohy"/>
 					<Item id="6817" name="Body obnovení a periodické zálohování"/>
 					<Item id="6818" name="Aktivovat ukládání bodů pro obnovení relace a periodické zálohování"/>
-					<Item id="6819" name="Zálohovat každých"/>
-					<Item id="6821" name="sekund"/>
+					<Item id="6819" name="Zálohovat při změně každých"/>
+					<Item id="6821" name="sekund (při modif.)"/>
 					<Item id="6822" name="Cesta k zálohám:"/>
+					<Item id="6825" name="Pamatovat si nedostupné soubory z poslední relace (zástupné dokumenty/karty)"/>
 				</Backup>
 				<AutoCompletion title="Automat. dokončování">
-					<Item id="6115" name="Automatické odsazování"/>
 					<Item id="6807" name="Automatické dokončování"/>
 					<Item id="6808" name="Povolit autom. dokončování každého vstupu"/>
 					<Item id="6809" name="Dokončování funkcí"/>
@@ -1289,7 +1333,7 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 					<Item id="7141" name="Omezení funkcí pro velké soubory"/>
 					<Item id="7143" name="Povolit vypnutí zvýrazňování syntaxe pro velké soubory"/>
 					<Item id="7144" name="Velký soubor je >= "/>
-					<Item id="7146" name="MB   (1 - 4096)"/>
+					<Item id="7146" name="MB   (1 - 2046)"/>
 					<Item id="7147" name="Povolit párování závorek"/>
 					<Item id="7148" name="Povolit automatické dokončování"/>
 					<Item id="7149" name="Povolit inteligentní zvýrazňování"/>
@@ -1381,15 +1425,20 @@ Můžete definovat více značek sloupců použitím více čísel oddělených 
 				<Item id="5" name="N&amp;e pro všechny"/>
 			</DoSaveOrNot>
 			
-			<DoSaveAll title="Potvrzení pro 'Uložit všechny'">
+			<DoSaveAll title="Potvrzení pro &quot;Uložit všechny&quot;">
 				<Item id="1766" name="Jste si jistí, že chcete uložit všechny modifikované dokumenty?
 
 Vyberte &quot;Pokaždé ano&quot;, jestliže nechcete znovu vidět tento dialog.
-Potvrzovací dialog můžete kdykoliv reaktivovat v 'Nastavení'."/>
+Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="6" name="&amp;Ano"/>
 				<Item id="7" name="&amp;Ne"/>
 				<Item id="4" name="&amp;Pokaždé ano"/>
-			</DoSaveAll><!-- HowToReproduce: Check the 'Enable Save All confirm dialog' checkbox in Preference->MISC, now click 'Save all' -->
+			</DoSaveAll><!-- HowToReproduce: Check the "Enable Save All confirm dialog" checkbox in Preference->MISC, now click "Save all" -->
+
+			<DebugInfo title="Informace k ladění">
+				<Item id="1752" name="&amp;Zkopírujte informace do Schránky"/>
+				<Item id="1" name="OK"/>
+			</DebugInfo>
 
 		</Dialog>
 
@@ -1409,7 +1458,7 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v 'Nastavení'."/>
 			<SettingsOnCloudError title="Nastavení cloudu" message="Zdá se, že nastavená cesta k i-úložišti ukazuje na jednotku, která je určena pouze ke čtení\r nebo na složku bez oprávnění k zápisu.\rVaše nastavení i-úložiště bude zrušeno. Prosím nastavte znovu odpovídající hodnotu v dialogu Volby..."/>
 			<FilePathNotFoundWarning title="Otevření souboru" message="Soubor, který se pokoušíte otevřít, neexistuje."/>
 			<SessionFileInvalidError title="Relace nemohla být zavedena" message="Soubor relace je buďto poškozen nebo je neplatný."/>
-			<DroppingFolderAsProjectModeWarning title="Neplatná akce" message="Můžete přetahovat soubory nebo složky, ale ne obojí zároveň, jelikož máte zapnutý mód pro otevírání složek souborů jako projektů. Pro změnu nastavení musíte v Nastavení->Volby...->ImplicitníAdresář povolit 'Otevírat všechny soubory ve složce při přetažení myší (místo zdroje pro pracovní plochu)'."/>
+			<DroppingFolderAsProjectModeWarning title="Neplatná akce" message="Můžete přetahovat soubory nebo složky, ale ne obojí zároveň, jelikož máte zapnutý mód pro otevírání složek souborů jako projektů. Pro změnu nastavení musíte v Nastavení->Volby...->ImplicitníAdresář povolit &quot;Otevírat všechny soubory ve složce při přetažení myší (místo zdroje pro pracovní plochu)&quot;."/>
 			<SortingError title="Chyba třídění" message="Nebylo možné provést numerické setřídění kvůli řádku $INT_REPLACE$."/>
 			<ColumnModeTip title="Tip pro Sloupcový režim" message="
 Existují 3 způsoby přepnutí do režimu výběru sloupce:
@@ -1466,7 +1515,7 @@ Vaše pracovní plocha nebyla uložena."/><!-- HowToReproduce: this message prev
 			<UDLNewNameError title="Chyba UDL" message="Tento název je již využíván jiným jazykem/syntaxí, prosím zadejte jiný."/>
 			<UDLRemoveCurrentLang title="Odstranění aktuální syntaxe" message="Jste si jisti?"/>
 			<SCMapperDoDeleteOrNot title="Jste si jisti?" message="Jste si jisti, že chcete smazat tuto klávesovou zkratku / příkaz?"/>
-			<FindCharRangeValueError title="Problém s rozsahem hodnoty" message="Měli byste napsat hodnotu z rozsahu 0 až 255."/>
+			<FindCharRangeValueError title="Problém s rozsahem hodnoty" message="Měli byste napsat hodnotu z rozsahu 0 až 255."/><!-- HowToReproduce: Search menu, then Find characters in range, select Custom range, enter 999 in either edit box, press Find. -->
 			<OpenInAdminMode title="Ukládání selhalo" message="Soubor nemůže být uložen a může být chráněn proti zápisu. Chcete zkusit spustit Notepad++ s právy administrátora?"/>
 			<OpenInAdminModeWithoutCloseCurrent title="Ukládání selhalo" message="Soubor nemůže být uložen a může být chráněn proti zápisu. Chcete zkusit spustit Notepad++ s právy administrátora?"/>
 			<OpenInAdminModeFailed title="Otevření s administrátorskými právy selhalo" message="Notepad++ nemůže být spuštěn s právy administrátora."/>
@@ -1487,6 +1536,26 @@ Jako alternativu můžete využít přechod zpět na nižší verzi Notepadu++ (
 Přejmenováním &quot;shortcuts.xml.v8.5.2.backup&quot; -&gt; &quot;shortcuts.xml&quot; zpátky by se Vaše původní makra a příkazy měly obnovit a fungovat správně."/> <!-- HowToReproduce: Close Notepad++, remove shortcuts.xml.v8.5.2.backup & v852ShortcutsCompatibilityWarning.xml if present, relaunch Notepad++, delete or modify a shortcuts via Shortcut Mapper, close Notepad++, then the message will show up -->
 			<NotEnoughRoom4Saving title="Ukládání selhalo" message="Soubor se nepodařilo uložit.
 Zdá se, že na disku není dostatek místa pro uložení souboru. Váš soubor není uložen."/>
+			<FileInaccessibleUserSession title="Nedostupný soubor" message="Některé soubory z manuálně uložené relace &quot;$STR_REPLACE$&quot; nejsou aktuálně dostupné. Mohou být v otevírané relaci dočasně nahrazeny prázdnými nezapisovatelnými zástupnými dokumenty/kartami.
+Přejete si použít takovéto zástupné dokumenty/karty?
+
+POZNÁMKA: Jestliže se rozhodnete neotevírat zástupné dokumenty/karty anebo je poté sami zavřete, Vaše dříve ručně uložená relace se při ukončení Notepadu++ NEZMĚNÍ (pokud ji znovu manuálně neuložíte)."/>
+			<FileInaccessibleDefaultSessionXml title="Nedostupný soubor" message="Některé soubory z poslední relace nejsou aktuálně dostupné. Mohou být v relaci dočasně nahrazeny prázdnými nezapisovatelnými zástupnými dokumenty/kartami.
+Přejete si použít takovéto zástupné dokumenty/karty?
+
+POZNÁMKA: Jestliže se rozhodnete neotevírat zástupné dokumenty/karty anebo je poté sami zavřete, Vaše relace BUDE PŘI UKONČENÍ Notepadu++ automaticky MODIFIKOVÁNA!
+Doporučujeme Vám, abyste si nyní zazálohovali Váš soubor &quot;session.xml&quot;."/>
+			<RTLvsDirectWrite title="Nelze použít směr textu RTL" message="RTL není v současnosti kompatibilní se zvoleným DirectWrite režimem. Prosím vypněte nejprve DirectWrite v sekci &quot;Různé&quot; v &quot;Nastavení&quot; a restartujte Notepad++."/>
+			<FileMemoryAllocationFailed title="Problém s alokací paměti pro soubor" message="Pravděpodobně není dostatek souvislé volné paměti pro soubor, který Notepad++ právě načítá."/><!-- HowToReproduce: Try to open multiple files with total size > ~700MB in the x86 Notepad++ (it will depend on the PC memory configuration and the current system memory usage...). -->
+			<FindRegexBackwardDisabled title="Vypnuté zpětné vyhledávání při užívání regulárních výrazů" message="Ve výchozím nastavení je zpětné vyhledávání při užití regulárních výrazů zakázáno kvůli potenciálně neočekávaným výsledkům. Chcete-li provést zpětné vyhledávání, otevřete dialogové okno Najít a místo regulárních výrazů vyberte režim normálního nebo rozšířeného vyhledávání.
+Stisknutím tlačítka OK otevřete dialogové okno Najít nebo ho přepnete do popředí.
+			
+Pokud opravdu potřebujete funkci zpětného vyhledávání při regulárních výrazech, pokyny pro její zapnutí najdete v uživatelské příručce."/>
+			<PrintError title="0" message="Nelze spustit tisk dokumentu."/><!-- Use title="0" to use Windows OS default translated "Error" title. -->
+			<FindAutoChangeOfInSelectionWarning title="Upozornění pro vyhledávání" message="Stav zaškrtávacího políčka &quot;Ve vybraném&quot; byl automaticky změněn (ovládáno položkou v Nastavení > Volby... > Vyhledávání).
+
+Před provedením akce si prosím nejprve ověřte nastavené podmínky."/> <!-- HowToReproduce: https://github.com/notepad-plus-plus/notepad-plus-plus/issues/14897#issuecomment-2564316224 -->
+			<Need2Restart2ShowMenuShortcuts title="Restartujte Notepad++" message="Je zapotřebí restartovat Notepad++, aby se vpravo mohly zobrazit ovládací prvky hlavního menu."/>
 		</MessageBox>
 		
 		<ClipboardHistory>
@@ -1617,7 +1686,6 @@ Zdá se, že na disku není dostatek místa pro uložení souboru. Váš soubor 
 			<default-open-save-select-folder value="Vyberte výchozí složku"/><!-- HowToReproduce: Settings > Preferences > Default Directory > [...] -->
 			<shift-change-direction-tip value="Pro změnu směru vyhledávání použijte Shift + Enter."/>
 			<two-find-buttons-tip value="Mód se dvěma vyhledávacími tlačítky"/>
-			<file-rename-title value="Přejmenovat"/>
 			<find-in-files-filter-tip value="Hledat v cpp, cxx, h, hxx &amp;&amp; hpp souborech:
 *.cpp *.cxx *.h *.hxx *.hpp
 
@@ -1630,8 +1698,9 @@ Hledat ve všech souborech, ale vynechat složky tests, bin &amp;&amp; bin64:
 Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo logs:
 *.* !\\log*+"/><!-- HowToReproduce: Tip of mouse hovered on "Filters" label in "Find in Files" section of Find dialog. -->
 			<find-in-files-select-folder value="Vyberte složku, kde chcete vyhledávat"/><!-- HowToReproduce: Search > Find in Files > [...] -->
-			<find-status-top-reached value="Vyhledávání: Nalezen první výskyt od konce. Bylo dosaženo začátku tohoto dokumentu"/>
-			<find-status-end-reached value="Vyhledávání: Nalezen první výskyt od začátku. Bylo dosaženo konce tohoto dokumentu"/>
+			<find-in-files-dir-from-active-doc-tip value="Vyplní pole &quot;Adresář:&quot; podle aktivního dokumentu."/><!-- HowToReproduce: Search > Find in Files > [<<] -->
+			<find-status-top-reached value="Vyhledávání: Dosažen začátek dokumentu, nalezen první výskyt zdola."/>
+			<find-status-end-reached value="Vyhledávání: Dosažen konec dokumentu, nalezen první výskyt shora."/>
 			<find-status-replaceinfiles-1-replaced value="Nahrazování v souborech: 1 výskyt nahrazen"/>
 			<find-status-replaceinfiles-nb-replaced value="Nahrazování v souborech: $INT_REPLACE$ výskytů nahrazeno"/>
 			<find-status-replaceinopenedfiles-1-replaced value="Nahrazování v otevřených souborech: 1 výskyt nahrazen"/>
@@ -1645,14 +1714,15 @@ Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo l
 			<find-status-replaceall-1-replaced value="Nahrazování všeho: 1 výskyt nahrazen"/>
 			<find-status-replaceall-nb-replaced value="Nahrazování všeho: $INT_REPLACE$ výskytů nahrazeno"/>
 			<find-status-replaceall-readonly value="Nahrazování všeho: Nemohu nahradit text. Současný dokument je pouze pro čtení"/>
-			<find-status-replace-end-reached value="Nahrazování: Nahrazen první výskyt od začátku. Bylo dosaženo konce dokumentu"/>
-			<find-status-replace-top-reached value="Nahrazování: Nahrazen první výskyt od konce. Bylo dosaženo začátku dokumentu"/>
+			<find-status-replace-end-reached value="Nahrazování: Dosažen konec dokumentu, nahrazen první výskyt zhora."/>
+			<find-status-replace-top-reached value="Nahrazování: Dosažen začátek dokumentu, nahrazen první výskyt zdola."/>
 			<find-status-replaced-next-found value="Nahrazování: 1 výskyt byl nahrazen. Další výskyt nalezen."/>
 			<find-status-replaced-without-continuing value="Nahrazování: 1 výskyt byl nahrazen."/>
 			<find-status-replaced-next-not-found value="Nahrazování: 1 výskyt byl nahrazen. Další výskyt nenalezen."/>
 			<find-status-replace-not-found value="Nahrazování: žádný výskyt nebyl nalezen"/>
 			<find-status-replace-readonly value="Nahrazování: Nemohu nahradit text. Současný dokument je pouze pro čtení"/>
 			<find-status-cannot-find value="Vyhledávání: Nemohu nalézt text &quot;$STR_REPLACE$&quot;"/>
+			<find-status-cannot-find-pebkac-maybe value="Zadaný výskyt nelze najít. Možná jste zapomněli zkontrolovat nastavení &quot;Na konci znovu od začátku&quot; (zaškrtnuto), &quot;Rozlišovat malá a VELKÁ písmena&quot; (nezaškrtnuto) nebo &quot;Hledat pouze celá slova&quot; (nezaškrtnuto)."/>
 			<find-status-scope-selection value="ve vybraném textu"/>
 			<find-status-scope-all value="v celém souboru"/>
 			<find-status-scope-backward value="od začátku souboru až ke kurzoru"/>
@@ -1662,17 +1732,15 @@ Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo l
 			<finder-collapse-all value="Sbalit vše"/>
 			<finder-uncollapse-all value="Rozbalit vše"/>
 			<finder-copy value="Kopírovat vybrané řádky"/>
-			<finder-copy-verbatim value="Kopírovat"/>
-			<finder-copy-paths value="Kopírovat souborovou cestu(y)"/>
-			<finder-select-all value="Vybrat vše"/>
+			<finder-copy-selected-paths value="Kopírovat cesty u vybraných souborů"/>
 			<finder-clear-all value="Smazat vše"/>
-			<finder-open-all value="Otevřít vše"/>
+			<finder-open-selected-paths value="Otevřít vybrané soubory"/>
 			<finder-purge-for-every-search value="Vymazat před každým vyhledáváním"/>
 			<finder-wrap-long-lines value="Zalomit dlouhé řádky"/>
 			<common-ok value="OK"/>
 			<common-cancel value="Storno"/>
 			<common-name value="Název"/>
-			<tabrename-title value="Přejmenovat aktuální záložku (Tab)"/>
+			<tabrename-title value="Přejmenovat aktuální kartu (tab)"/>
 			<tabrename-newname value="Nový název"/>
 			<splitter-rotate-left value="Otočit doleva"/>
 			<splitter-rotate-right value="Otočit doprava"/>
@@ -1691,7 +1759,6 @@ Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo l
 			<summary-nbsel2 value=" bytů) v "/>
 			<summary-nbrange value=" oblastech"/>
 			<progress-hits-title value="Výskytů:"/>
-			<progress-cancel-button value="Storno"/>
 			<progress-cancel-info value="Ruším operaci, počkejte prosím ..."/>
 			<find-in-files-progress-title value="Průběh hledání v souborech ..."/>
 			<replace-in-files-confirm-title value="Jste si jistí?"/>
@@ -1706,6 +1773,11 @@ Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo l
 			<find-result-title value="Vyhledávání"/><!-- Must not begin with space or tab character -->
 			<find-result-title-info value="($INT_REPLACE1$ výskytů v $INT_REPLACE2$ souborech z $INT_REPLACE3$ prohledaných)"/>
 			<find-result-title-info-selections value="($INT_REPLACE1$ výskytů v $INT_REPLACE2$ výběrech z $INT_REPLACE3$ prohledávaných)"/>
+			<find-result-title-info-options-searchmode-normal value="Normální"/>
+			<find-result-title-info-options-searchmode-extended value="Rozšířený"/>
+			<find-result-title-info-options-searchmode-regexp value="Reg. výraz"/>
+			<find-result-title-info-options-case value="VELKÁ/malá"/>
+			<find-result-title-info-options-word value="Celá slova"/>
 			<find-result-title-info-extra value=" - Režim řádkového filtru: zobrazení pouze filtrovaných výsledků"/>
 			<find-result-hits value="(výskytů: $INT_REPLACE$)"/>
 			<find-result-line-prefix value="Řádek"/><!-- Must not begin with space or tab character -->
@@ -1716,8 +1788,8 @@ Hledat ve všech souborech, ale rekurzivně vynechat všechny složky log nebo l
 			<close-panel-tip value="Zavřít"/>
 			<IncrementalFind-FSFound value="výskytů: $INT_REPLACE$"/>
 			<IncrementalFind-FSNotFound value="Výraz nenalezen."/>
-			<IncrementalFind-FSTopReached value="Bylo dosaženo začátku stránky, pokračování odspodu"/>
-			<IncrementalFind-FSEndReached value="Bylo dosaženo konce stránky, pokračování odshora"/>
+			<IncrementalFind-FSTopReached value="Dosažen začátek stránky, pokračování odspodu."/>
+			<IncrementalFind-FSEndReached value="Dosažen konec stránky, pokračování odshora."/>
 			<contextMenu-styleAlloccurrencesOfToken value="Označit všechny výskyty tokenu stylem"/>
 			<contextMenu-styleOneToken value="Označit token (jeden) stylem"/>
 			<contextMenu-clearStyle value="Odstranit označení stylem u tokenů"/>
@@ -1756,7 +1828,16 @@ Kliknutím na &quot;?&quot; tlačítko vpravo otevřete webovou stránku s Uživ
 			<!-- Don't translate "(&quot;Non-printing characters custom color&quot;)" -->
 			<npcCustomColor-tip value="Přejděte do Úpravy stylu a změňte výchozí vlastní barvu pro vybrané prázdné a netisknutelné znaky. (&quot;Non-printing characters custom color&quot;)."/>
 			<npcIncludeCcUniEol-tip value="Použije nastavení vzhledu netisknutelných znaků pro řídící znaky C0, C1 (reprezentují další informace o textu jako jsou další řádek, oddělovač řádků, oddělovač odstavců) a pro Unicode EOL znaky." />
-			<searchingInSelThresh-tip value="Minimální počet vybraných znaků editační zóny, aby došlo k automatickému zaškrtnutí políčka 'Ve vybraném' při aktivaci dialogu 'Najít'. Nejvyšší možná hodnota je 1024. Pokud chcete toto automatické zaškrtávání zcela vypnout, nastavte hodnotu na 0."/>
+			<searchingInSelThresh-tip value="Minimální počet vybraných znaků editační zóny, aby došlo k automatickému zaškrtnutí políčka &quot;Ve vybraném&quot; při aktivaci dialogu &quot;Najít&quot;. Nejvyšší možná hodnota je 1024. Pokud chcete toto automatické zaškrtávání zcela vypnout, nastavte hodnotu na 0."/>
+			<verticalEdge-tip value="Přidejte Vaši sloupcovou značku poukázáním na její pozici (decimální číslo). Můžete definovat více značek sloupců použitím více čísel oddělených prázdnými znaky."/>
+			<fileSaveAsCopySaveButton-tip value="Chcete-li po uložení kopii i otevřít, přidržte Shift při stisknutí tlačítka."/>
+			<autoIndentBasic-tip value="Zajistí, aby odsazení aktuálního řádku (tj. nového řádku vytvořeného stisknutím klávesy ENTER) odpovídalo odsazení předchozího řádku."/>
+			<autoIndentAdvanced-tip value="Dovolí inteligentní odsazování pro jazyky &quot;podobné C&quot; a Python. Mezi jazyky &quot;podobné C&quot; zde patří:
+C, C++, Java, C#, Objective-C, PHP, JavaScript, JSP, CSS, Perl, Rust, PowerShell and JSON.
+
+Pokud zvolíte Pokročilý režim, ale nebudete upravovat soubory výše zmíněných jazyků, zůstane odsazení v Základním režimu."/>
+			<!-- Don't translate "&quot;Global override&quot; and &quot;Default Style&quot; -->
+			<global-override-tip value="Použitím &quot;Global override&quot; přepíšete nastavení ve všech stylech pro všechny syntaxe. Nejspíše chcete namísto toho použít nastavení &quot;Default Style&quot;."/>
 		</MiscStrings>
 
 	</Native-Langue>

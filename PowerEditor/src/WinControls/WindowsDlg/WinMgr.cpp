@@ -20,7 +20,7 @@ inline static DWORD GetExStyle(HWND hWnd) {
 	return (DWORD)GetWindowLongPtr(hWnd, GWL_EXSTYLE);
 }
 
-const UINT WM_WINMGR = RegisterWindowMessage(TEXT("WM_WINMGR"));
+const UINT WM_WINMGR = RegisterWindowMessage(L"WM_WINMGR");
 
 CWinMgr::CWinMgr(WINRECT* pWinMap) : m_map(pWinMap)
 {
@@ -69,8 +69,7 @@ void CWinMgr::GetWindowPositions(HWND hWnd)
 //////////////////
 // Move all the windows. Use DeferWindowPos for speed.
 //
-void
-CWinMgr::SetWindowPositions(HWND hWnd)
+void CWinMgr::SetWindowPositions(HWND hWnd)
 {
 	int nWindows = CountWindows();
 	if (m_map && hWnd && nWindows>0) {
@@ -132,8 +131,7 @@ WINRECT* CWinMgr::FindRect(int nID)
 // algorithm. If a window is given, it's used to get the min/max size and
 // desired size for TOFIT types.
 //
-void
-CWinMgr::CalcGroup(WINRECT* pGroup, HWND hWnd)
+void CWinMgr::CalcGroup(WINRECT* pGroup, HWND hWnd)
 {
 	// If this bombs, most likely the first entry in your map is not a group!
 	assert(pGroup && pGroup->IsGroup());
@@ -203,8 +201,7 @@ CWinMgr::CalcGroup(WINRECT* pGroup, HWND hWnd)
 // Adjust the size of a single entry upwards to its desired size.
 // Decrement hwRemaining by amount increased.
 //
-void
-CWinMgr::AdjustSize(WINRECT* wrc, BOOL bRow,
+void CWinMgr::AdjustSize(WINRECT* wrc, BOOL bRow,
 	int& hwRemaining, HWND hWnd)
 {
 	SIZEINFO szi;
@@ -212,7 +209,7 @@ CWinMgr::AdjustSize(WINRECT* wrc, BOOL bRow,
 	int hw = bRow ? szi.szDesired.cy : szi.szDesired.cx; // desired ht or wid
 	if (wrc->Type() == WRCT_REST) {
 		// for REST type, use all remaining space
-		RECT& rc = wrc->GetRect();
+		const RECT& rc = wrc->GetRect();
 		hw = hwRemaining + (bRow ? RectHeight(rc) : RectWidth(rc));
 	}
 
@@ -236,8 +233,7 @@ CWinMgr::AdjustSize(WINRECT* wrc, BOOL bRow,
 // one below the other; for columns, set each column as tall as rcTotal and
 // each to the right of the previous.
 //
-void
-CWinMgr::PositionRects(WINRECT* pGroup, const RECT& rcTotal, BOOL bRow)
+void CWinMgr::PositionRects(WINRECT* pGroup, const RECT& rcTotal, BOOL bRow)
 {
 	LONG xoryPos = bRow ? rcTotal.top : rcTotal.left;
 
@@ -269,8 +265,7 @@ CWinMgr::PositionRects(WINRECT* pGroup, const RECT& rcTotal, BOOL bRow)
 // the SIZEINFO argument. For a group, calculate size info as aggregate of
 // subentries.
 //
-void
-CWinMgr::OnGetSizeInfo(SIZEINFO& szi, WINRECT* wrc, HWND hWnd)
+void CWinMgr::OnGetSizeInfo(SIZEINFO& szi, WINRECT* wrc, HWND hWnd)
 {
 	szi.szMin = SIZEZERO;				// default min size = zero
 	szi.szMax = SIZEMAX;					// default max size = infinite
@@ -317,21 +312,27 @@ CWinMgr::OnGetSizeInfo(SIZEINFO& szi, WINRECT* wrc, HWND hWnd)
 		// not a group
 		WINRECT* parent = wrc->Parent();
 		assert(parent);
-		RECT& rcParent = parent->GetRect();
+		const RECT& rcParent = parent->GetRect();
 		BOOL bRow = parent->IsRowGroup();
 		int hw, hwMin, hwTotal, pct;
 
-		switch (wrc->Type()) {
+		switch (wrc->Type())
+		{
 		case WRCT_FIXED:
 			hw = hwMin = wrc->GetParam();	 // ht/wid is parameter
-			if (hw<0) {							 // if fixed val is negative:
+			if (hw<0)							 // if fixed val is negative:
+			{
 				hw = -hw;						 // use absolute val for desired..
 				hwMin = 0;						 // ..and zero for minimum
 			}
-			if (bRow) {
+
+			if (bRow)
+			{
 				szi.szMax.cy = szi.szDesired.cy = hw;
 				szi.szMin.cy = hwMin;
-			} else {
+			}
+			else
+			{
 				szi.szMax.cx = szi.szDesired.cx = hw;
 				szi.szMin.cx = hwMin;
 			}
@@ -401,8 +402,7 @@ BOOL CWinMgr::SendGetSizeInfo(SIZEINFO& szi, HWND hWnd, UINT nID)
 //////////////////
 // Get min/max info.
 //
-void
-CWinMgr::GetMinMaxInfo(HWND hWnd, MINMAXINFO* lpMMI)
+void CWinMgr::GetMinMaxInfo(HWND hWnd, MINMAXINFO* lpMMI)
 {
 	SIZEINFO szi;
 	GetMinMaxInfo(hWnd, szi); // call overloaded version
@@ -486,6 +486,7 @@ void CWinMgr::MoveRect(WINRECT* pwrcMove, POINT ptMove, HWND pParentWnd)
 	OffsetRect(pwrcMove->GetRect(), ptMove);
 	if (prev->IsGroup())
 		CalcGroup(prev, pParentWnd);
+
 	if (next->IsGroup())
 		CalcGroup(next, pParentWnd);
 }

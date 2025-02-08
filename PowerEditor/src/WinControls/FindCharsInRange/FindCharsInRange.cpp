@@ -95,9 +95,17 @@ intptr_t CALLBACK FindCharsInRangeDlg::run_dlgProc(UINT message, WPARAM wParam, 
 			return TRUE;
 		}
 
+		case WM_DPICHANGED:
+		{
+			_dpiManager.setDpiWP(wParam);
+			setPositionDpi(lParam);
+
+			return TRUE;
+		}
+
 		case WM_COMMAND:
 		{
-			switch (wParam)
+			switch (LOWORD(wParam))
 			{
 				case IDC_NONASCCI_RADIO:
 				case IDC_ASCCI_RADIO:
@@ -134,8 +142,8 @@ intptr_t CALLBACK FindCharsInRangeDlg::run_dlgProc(UINT message, WPARAM wParam, 
 						//STOP!
 						NppParameters::getInstance().getNativeLangSpeaker()->messageBox("FindCharRangeValueError",
 							_hSelf,
-							TEXT("You should type between 0 and 255."),
-							TEXT("Range Value problem"),
+							L"You should type between 0 and 255.",
+							L"Range Value problem",
 							MB_OK);
 						return TRUE;
 					}
@@ -227,6 +235,7 @@ bool FindCharsInRangeDlg::getRangeFromUI(unsigned char & startRange, unsigned ch
 		endRange = 255;
 		return true;
 	}
+
 	if (isCheckedOrNot(IDC_ASCCI_RADIO))
 	{
 		startRange = 0;

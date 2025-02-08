@@ -363,7 +363,6 @@
 					<Item id="6109" name="Teken die onaktiewe tabs"/>
 					<Item id="6110" name="Teken die oranje boonste staaf"/>
 
-					<Item id="6111" name="Wys Status Staaf"/>
 					<Item id="6112" name="Aktiveer maak toe knoppie op elke tab"/>
 					<Item id="6113" name="Dubbel kliek om dokument toe te maak"/>
 					<Item id="6118" name="Steek weg"/>
@@ -458,8 +457,6 @@
 					<Item id="6304" name="Geskiedenis Leêr Verstellings"/>
 					<Item id="6305" name="Moet nie kyk op begin nie"/>
 					<Item id="6306" name="Maksimum geskiedenis leêr :"/>
-					<Item id="6307" name="Aktiveer"/>
-					<Item id="6308" name="Verklein na sys tray"/>
 					<Item id="6309" name="Onthou huidige sessie vir volgende begin"/>
 					<Item id="6312" name="Leêr Status Auto-Optelling"/>
 					<Item id="6313" name="Dateer saggies op"/>
@@ -478,7 +475,6 @@
 
 					<Item id="6331" name="Wys slegs leêr naam in titelstaaf"/>
 					<Item id="6114" name="Aktiveer"/>
-					<Item id="6115" name="Auto-indent"/>
 					<Item id="6117" name="Aktiveer MRU optrede"/>
 
 				</MISC>

@@ -39,17 +39,17 @@ public:
 
 class NativeLangSpeaker {
 public:
-	NativeLangSpeaker():_nativeLangA(NULL), _nativeLangEncoding(CP_ACP), _isRTL(false), _fileName(NULL){};
 	void init(TiXmlDocumentA *nativeLangDocRootA, bool loadIfEnglish = false);
 	void changeConfigLang(HWND hDlg);
-	void changeLangTabContextMenu(HMENU hCM);
+	void changeLangTabContextMenu(HMENU hCM) const;
+	void getAlternativeNameFromTabContextMenu(std::wstring& output, int cmdID, bool isAlternative, const std::wstring& defaultValue) const;
 	TiXmlNodeA * searchDlgNode(TiXmlNodeA *node, const char *dlgTagName);
 	bool changeDlgLang(HWND hDlg, const char *dlgTagName, char *title = NULL, size_t titleMaxSize = 0);
 	void changeLangTabDropContextMenu(HMENU hCM);
 	void changeLangTrayIconContexMenu(HMENU hCM);
-	generic_string getSubMenuEntryName(const char *nodeName) const;
-	generic_string getNativeLangMenuString(int itemID) const;
-	generic_string getShortcutNameString(int itemID) const;
+	std::wstring getSubMenuEntryName(const char *nodeName) const;
+	std::wstring getNativeLangMenuString(int itemID, std::wstring inCaseOfFailureStr = L"", bool removeMarkAnd = false) const;
+	std::wstring getShortcutNameString(int itemID) const;
 
 	void changeMenuLang(HMENU menuHandle);
 	void changeShortcutLang();
@@ -60,10 +60,14 @@ public:
 	void changePrefereceDlgLang(PreferenceDlg & preference);
 	void changePluginsAdminDlgLang(PluginsAdminDlg & pluginsAdminDlg);
 
-	bool getDoSaveOrNotStrings(generic_string& title, generic_string& msg);
+	bool getDoSaveOrNotStrings(std::wstring& title, std::wstring& msg);
 
 	bool isRTL() const {
 		return _isRTL;
+	};
+
+	bool isEditZoneRTL() const {
+		return _isEditZoneRTL;
 	};
 
 	const char * getFileName() const {
@@ -77,26 +81,30 @@ public:
 	int getLangEncoding() const {
 		return _nativeLangEncoding;
 	};
-	bool getMsgBoxLang(const char *msgBoxTagName, generic_string & title, generic_string & message);
-	generic_string getShortcutMapperLangStr(const char *nodeName, const TCHAR *defaultStr) const;
-	generic_string getProjectPanelLangMenuStr(const char * nodeName, int cmdID, const TCHAR *defaultStr) const;
-	generic_string getDlgLangMenuStr(const char* firstLevelNodeName, const char* secondLevelNodeName, int cmdID, const TCHAR *defaultStr) const;
-	generic_string getAttrNameStr(const TCHAR *defaultStr, const char *nodeL1Name, const char *nodeL2Name, const char *nodeL3Name = "name") const;
-	generic_string getAttrNameByIdStr(const TCHAR *defaultStr, TiXmlNodeA *targetNode, const char *nodeL1Value, const char *nodeL1Name = "id", const char *nodeL2Name = "name") const;
-	generic_string getLocalizedStrFromID(const char *strID, const generic_string& defaultString) const;
+	bool getMsgBoxLang(const char *msgBoxTagName, std::wstring & title, std::wstring & message);
+	std::wstring getShortcutMapperLangStr(const char *nodeName, const wchar_t *defaultStr) const;
+	std::wstring getProjectPanelLangMenuStr(const char * nodeName, int cmdID, const wchar_t *defaultStr) const;
+	std::wstring getDlgLangMenuStr(const char* firstLevelNodeName, const char* secondLevelNodeName, int cmdID, const wchar_t *defaultStr) const;
+	std::wstring getCmdLangStr(std::vector<const char*> nodeNames, int cmdID, const wchar_t* defaultStr) const;
+	std::wstring getAttrNameStr(const wchar_t *defaultStr, const char *nodeL1Name, const char *nodeL2Name, const char *nodeL3Name = "name") const;
+	std::wstring getAttrNameByIdStr(const wchar_t *defaultStr, TiXmlNodeA *targetNode, const char *nodeL1Value, const char *nodeL1Name = "id", const char *nodeL2Name = "name") const;
+	std::wstring getLocalizedStrFromID(const char *strID, const std::wstring& defaultString) const;
 	void getMainMenuEntryName(std::wstring& dest, HMENU hMenu, const char* menuIdStr, const wchar_t* defaultDest);
 
 	void resetShortcutMenuNameMap() {
 		_shortcutMenuEntryNameMap.clear();
 	};
 
-	int messageBox(const char *msgBoxTagName, HWND hWnd, const TCHAR *message, const TCHAR *title, int msgBoxType, int intInfo = 0, const TCHAR *strInfo = NULL);
+	int messageBox(const char *msgBoxTagName, HWND hWnd, const wchar_t *message, const wchar_t *title, int msgBoxType, int intInfo = 0, const wchar_t *strInfo = NULL);
 private:
-	TiXmlNodeA *_nativeLangA;
-	int _nativeLangEncoding;
-	bool _isRTL;
-	const char *_fileName;
+	TiXmlNodeA *_nativeLangA = nullptr;
+	int _nativeLangEncoding = CP_ACP;
+	bool _isRTL = false; // for Notepad++ GUI
+	bool _isEditZoneRTL = false; // for Scitilla
+	const char *_fileName = nullptr;
 	std::map<std::string, std::wstring> _shortcutMenuEntryNameMap;
+
+	static void resizeCheckboxRadioBtn(HWND hWnd);
 };
 
 

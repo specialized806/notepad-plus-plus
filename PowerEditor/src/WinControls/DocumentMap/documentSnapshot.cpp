@@ -29,6 +29,7 @@ intptr_t CALLBACK DocumentPeeker::run_dlgProc(UINT message, WPARAM /*wParam*/, L
 			_pPeekerView->execute(SCI_SETZOOM, static_cast<WPARAM>(-10), 0);
 			_pPeekerView->execute(SCI_SETVSCROLLBAR, FALSE, 0);
 			_pPeekerView->execute(SCI_SETHSCROLLBAR, FALSE, 0);
+			_pPeekerView->execute(SCI_SETMODEVENTMASK, MODEVENTMASK_OFF); // Turn off the modification event
 
 			_pPeekerView->showIndentGuideLine(false);
 
@@ -80,7 +81,6 @@ void DocumentPeeker::syncDisplay(Buffer *buf, const ScintillaEditView & scintSou
 			scrollSnapshotWith(mp, scintSource.getTextZoneWidth());
 		}
 
-		Buffer *buf = _pPeekerView->getCurrentBuffer();
 		_pPeekerView->defineDocType(buf->getLangType());
 		_pPeekerView->showMargin(ScintillaEditView::_SC_MARGE_FOLDER, false);
 
@@ -107,11 +107,13 @@ void DocumentPeeker::scrollSnapshotWith(const MapPosition & mapPos, int textZone
 			_rc.bottom = _rc.top + static_cast<LONG>(mapPos._height);
 			hasBeenChanged = true;
 		}
+
 		if (mapPos._width != -1 && _rc.right != _rc.left + mapPos._width)
 		{
 			_rc.right = _rc.left + static_cast<LONG>(mapPos._width);
 			hasBeenChanged = true;
 		}
+
 		if (hasBeenChanged)
 			::MoveWindow(_pPeekerView->getHSelf(), 0, 0, _rc.right - _rc.left, _rc.bottom - _rc.top, TRUE);
 		//

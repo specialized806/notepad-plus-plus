@@ -80,8 +80,8 @@ struct TiXmlCursorA
 	TiXmlCursorA()		{ Clear(); }
 	void Clear()		{ row = col = -1; }
 
-	int row;	// 0 based.
-	int col;	// 0 based.
+	int row = -1;	// 0 based.
+	int col = -1;	// 0 based.
 };
 
 
@@ -1013,8 +1013,8 @@ public:
 	bool SaveFile( const char * filename ) const;
 
 	/// Load and Save a file using the given unicode filename. Returns true if successful.
-	bool LoadUnicodeFilePath( const TCHAR* filename );
-	bool SaveUnicodeFilePath( const TCHAR* filename ) const;
+	bool LoadUnicodeFilePath( const wchar_t* filename );
+	bool SaveUnicodeFilePath( const wchar_t* filename ) const;
 
 	#ifdef TIXMLA_USE_STL
 	bool LoadFile( const std::string& filename )			///< STL std::string version.
@@ -1115,10 +1115,10 @@ protected :
 	#endif
 
 private:
-	bool error;
-	int  errorId;
+	bool error = false;
+	int  errorId = 0;
 	TIXMLA_STRING errorDesc;
-	int tabsize;
+	int tabsize  = 4;
 	TiXmlCursorA errorLocation;
 };
 

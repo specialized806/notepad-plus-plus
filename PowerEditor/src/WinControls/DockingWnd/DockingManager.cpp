@@ -119,7 +119,7 @@ void DockingManager::init(HINSTANCE hInst, HWND hWnd, Window ** ppWin)
 	_hSelf = ::CreateWindowEx(
 					0,
 					DSPC_CLASS_NAME,
-					TEXT(""),
+					L"",
 					WS_CHILD | WS_CLIPCHILDREN,
 					CW_USEDEFAULT, CW_USEDEFAULT,
 					CW_USEDEFAULT, CW_USEDEFAULT,
@@ -260,12 +260,6 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 				hWndServer = NULL;
 			}
 
-			// destroy imagelist if it exists
-			if (_hImageList != NULL)
-			{
-				::ImageList_Destroy(_hImageList);
-			}
-
 			// destroy containers
 			for (int32_t i = static_cast<int32_t>(_vContainer.size()); i > 0; i--)
 			{
@@ -300,17 +294,33 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		{
 			int offset = static_cast<int32_t>(wParam);
 
+			NppGUI& nppGUI = (NppParameters::getInstance()).getNppGUI();
+
 			for (int iCont = 0; iCont < DOCKCONT_MAX; ++iCont)
 			{
 				if (_vSplitter[iCont]->getHSelf() == reinterpret_cast<HWND>(lParam))
 				{
+					RECT rcPanelCaption{};
+					if (::GetWindowRect(_vContainer[iCont]->getCaptionWnd(), &rcPanelCaption))
+					{
+						LONG currentPanelHeight = rcPanelCaption.bottom - rcPanelCaption.top;
+						if (currentPanelHeight != nppGUI._dockingData._minDockedPanelVisibility)
+						{
+							// update with current value (important for multi-monitors setups or a runtime change of display DPI)
+							nppGUI._dockingData._minDockedPanelVisibility = currentPanelHeight;
+							nppGUI._dockingData._minFloatingPanelSize.cy = currentPanelHeight;
+							nppGUI._dockingData._minFloatingPanelSize.cx = std::max(static_cast<int>(nppGUI._dockingData._minFloatingPanelSize.cy * 6),
+								::GetSystemMetrics(SM_CXMINTRACK));
+						}
+					}
+
 					switch (iCont)
 					{
 						case CONT_TOP:
 							_dockData.rcRegion[iCont].bottom -= offset;
-							if (_dockData.rcRegion[iCont].bottom < 0)
+							if (_dockData.rcRegion[iCont].bottom < nppGUI._dockingData._minDockedPanelVisibility)
 							{
-								_dockData.rcRegion[iCont].bottom = 0;
+								_dockData.rcRegion[iCont].bottom = nppGUI._dockingData._minDockedPanelVisibility;
 							}
 							if ((_rcWork.bottom < (-SPLITTER_WIDTH)) && (offset < 0))
 							{
@@ -319,9 +329,9 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 							break;
 						case CONT_BOTTOM:
 							_dockData.rcRegion[iCont].bottom   += offset;
-							if (_dockData.rcRegion[iCont].bottom < 0)
+							if (_dockData.rcRegion[iCont].bottom < nppGUI._dockingData._minDockedPanelVisibility)
 							{
-								_dockData.rcRegion[iCont].bottom   = 0;
+								_dockData.rcRegion[iCont].bottom   = nppGUI._dockingData._minDockedPanelVisibility;
 							}
 							if ((_rcWork.bottom < (-SPLITTER_WIDTH)) && (offset > 0))
 							{
@@ -330,9 +340,9 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 							break;
 						case CONT_LEFT:
 							_dockData.rcRegion[iCont].right    -= offset;
-							if (_dockData.rcRegion[iCont].right < 0)
+							if (_dockData.rcRegion[iCont].right < nppGUI._dockingData._minDockedPanelVisibility)
 							{
-								_dockData.rcRegion[iCont].right = 0;
+								_dockData.rcRegion[iCont].right = nppGUI._dockingData._minDockedPanelVisibility;
 							}
 							if ((_rcWork.right < SPLITTER_WIDTH) && (offset < 0))
 							{
@@ -341,9 +351,9 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 							break;
 						case CONT_RIGHT:
 							_dockData.rcRegion[iCont].right    += offset;
-							if (_dockData.rcRegion[iCont].right < 0)
+							if (_dockData.rcRegion[iCont].right < nppGUI._dockingData._minDockedPanelVisibility)
 							{
-								_dockData.rcRegion[iCont].right = 0;
+								_dockData.rcRegion[iCont].right = nppGUI._dockingData._minDockedPanelVisibility;
 							}
 							if ((_rcWork.right < SPLITTER_WIDTH) && (offset > 0))
 							{
@@ -379,21 +389,7 @@ LRESULT DockingManager::runProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			toggleVisTb(reinterpret_cast<DockingCont*>(lParam), DMM_DOCK);
 			return FALSE;
 		}
-		case DMM_GETIMAGELIST:
-		{
-			return reinterpret_cast<LPARAM>(_hImageList);
-		}
-		case DMM_GETICONPOS:
-		{
-			for (size_t uImageCnt = 0, len = _vImageList.size(); uImageCnt < len; ++uImageCnt)
-			{
-				if (reinterpret_cast<HWND>(lParam) == _vImageList[uImageCnt])
-				{
-					return uImageCnt;
-				}
-			}
-			return -1;
-		}
+
 		default :
 			break;
 	}
@@ -430,11 +426,11 @@ void DockingManager::reSizeTo(RECT & rc)
 		_rcWork.bottom	-= _dockData.rcRegion[CONT_TOP].bottom + SPLITTER_WIDTH;
 
 		// set size of splitter
-		RECT	rc = {_dockData.rcRegion[CONT_TOP].left  ,
+		RECT rcSplitter = {_dockData.rcRegion[CONT_TOP].left  ,
 					  _dockData.rcRegion[CONT_TOP].top + _dockData.rcRegion[CONT_TOP].bottom,
 					  _dockData.rcRegion[CONT_TOP].right ,
 					  SPLITTER_WIDTH};
-		_vSplitter[CONT_TOP]->reSizeTo(rc);
+		_vSplitter[CONT_TOP]->reSizeTo(rcSplitter);
 	}
 
 	// set bottom container
@@ -464,11 +460,11 @@ void DockingManager::reSizeTo(RECT & rc)
 		}
 
 		// set size of splitter
-		RECT	rc = {rcBottom.left,
+		RECT rcSplitter = {rcBottom.left,
 					  rcBottom.top - SPLITTER_WIDTH,
 					  rcBottom.right,
 					  SPLITTER_WIDTH};
-		_vSplitter[CONT_BOTTOM]->reSizeTo(rc);
+		_vSplitter[CONT_BOTTOM]->reSizeTo(rcSplitter);
 	}
 
 	// set left container
@@ -484,11 +480,11 @@ void DockingManager::reSizeTo(RECT & rc)
 		_rcWork.right	-= _dockData.rcRegion[CONT_LEFT].right + SPLITTER_WIDTH;
 
 		// set size of splitter
-		RECT	rc = {_dockData.rcRegion[CONT_LEFT].right,
+		RECT rcSplitter = {_dockData.rcRegion[CONT_LEFT].right,
 					  _dockData.rcRegion[CONT_LEFT].top,
 					  SPLITTER_WIDTH,
 					  _dockData.rcRegion[CONT_LEFT].bottom};
-		_vSplitter[CONT_LEFT]->reSizeTo(rc);
+		_vSplitter[CONT_LEFT]->reSizeTo(rcSplitter);
 	}
 
 	// set right container
@@ -513,11 +509,11 @@ void DockingManager::reSizeTo(RECT & rc)
 		}
 
 		// set size of splitter
-		RECT	rc = {rcRight.left - SPLITTER_WIDTH,
+		RECT rcSplitter = {rcRight.left - SPLITTER_WIDTH,
 					  rcRight.top,
 					  SPLITTER_WIDTH,
 					  rcRight.bottom};
-		_vSplitter[CONT_RIGHT]->reSizeTo(rc);
+		_vSplitter[CONT_RIGHT]->reSizeTo(rcSplitter);
 	}
 
 	// set window positions of container
@@ -569,21 +565,15 @@ void DockingManager::reSizeTo(RECT & rc)
 
 void DockingManager::createDockableDlg(tTbData data, int iCont, bool isVisible)
 {
-	// add icons
-	if ((data.uMask & DWS_ICONTAB) && data.hIconTab != NULL)
+	// try to make bmp icon transparent
+	if ((data.uMask & DWS_ICONTAB) == DWS_ICONTAB && data.hIconTab != nullptr)
 	{
-		// create image list if not exist
-		if (_hImageList == NULL)
-		{
-			int iconDpiDynamicalSize = NppParameters::getInstance()._dpiManager.scaleY(12) + 2;
-			_hImageList = ::ImageList_Create(iconDpiDynamicalSize, iconDpiDynamicalSize, ILC_COLOR32 | ILC_MASK, 0, 0);
-		}
-
-		// add icon
-		::ImageList_AddIcon(_hImageList, data.hIconTab);
-
-		// do the reference here to find later the correct position
-		_vImageList.push_back(data.hClient);
+		const int iconSize = DPIManagerV2::scale(g_dockingContTabIconSize, data.hClient);
+		HIMAGELIST hImageList = ::ImageList_Create(iconSize, iconSize, ILC_COLOR32 | ILC_MASK, 0, 0);
+		::ImageList_AddIcon(hImageList, data.hIconTab);
+		::DestroyIcon(data.hIconTab);
+		data.hIconTab = ::ImageList_GetIcon(hImageList, 0, ILD_TRANSPARENT);
+		::ImageList_Destroy(hImageList);
 	}
 
 	if ((data.uMask & DWS_USEOWNDARKMODE) != DWS_USEOWNDARKMODE && NppDarkMode::isEnabledForPlugins())
@@ -714,7 +704,7 @@ void DockingManager::showDockableDlg(HWND hDlg, BOOL view)
 	}
 }
 
-void DockingManager::showDockableDlg(TCHAR* pszName, BOOL view)
+void DockingManager::showDockableDlg(wchar_t* pszName, BOOL view)
 {
 	for (size_t i = 0, len = _vContainer.size(); i < len; ++i)
 	{
@@ -961,43 +951,54 @@ int DockingManager::GetContainer(DockingCont* pCont)
 
 int DockingManager::FindEmptyContainer()
 {
-    int      iRetCont       = -1;
-    BOOL*    pPrevDockList  = (BOOL*) new BOOL[_vContainer.size()+1];
-    BOOL*    pArrayPos      = &pPrevDockList[1];
+	int iRetCont = -1;
+	const size_t dockingContVectorSize = _vContainer.size();
+	const size_t prevDockListBufSize = dockingContVectorSize + 1;
+	BOOL* pPrevDockList = new BOOL[prevDockListBufSize];
+	BOOL* pArrayPos = &pPrevDockList[1]; // make a room for the possible iPrevCont==-1 later
 
-    // delete all entries
-    for (size_t iCont = 0, len = _vContainer.size()+1; iCont < len; ++iCont)
-    {
-        pPrevDockList[iCont] = FALSE;
-    }
+	// reset all entries
+	for (size_t iCont = 0, len = prevDockListBufSize; iCont < len; ++iCont)
+	{
+		pPrevDockList[iCont] = FALSE;
+	}
 
-    // search for used floated containers
-    for (size_t iCont = 0; iCont < DOCKCONT_MAX; ++iCont)
-    {
-        vector<tTbData*>    vTbData = _vContainer[iCont]->getDataOfAllTb();
+	// search for used floating containers
+	for (size_t iCont = 0; iCont < DOCKCONT_MAX; ++iCont)
+	{
+		vector<tTbData*> vTbData = _vContainer[iCont]->getDataOfAllTb();
 
-        for (size_t iTb = 0, len = vTbData.size(); iTb < len; ++iTb)
-        {
-            pArrayPos[vTbData[iTb]->iPrevCont] = TRUE;
-        }
-    }
+		for (size_t iTb = 0, len = vTbData.size(); iTb < len; ++iTb)
+		{
+			if ((vTbData[iTb]->iPrevCont < static_cast<int>(dockingContVectorSize)) && (vTbData[iTb]->iPrevCont >= -1))
+			{
+				pArrayPos[vTbData[iTb]->iPrevCont] = TRUE;
+			}
+			else
+			{
+				// ? invalid config.xml input data
+				assert((vTbData[iTb]->iPrevCont < static_cast<int>(dockingContVectorSize)) && (vTbData[iTb]->iPrevCont >= -1));
+				vTbData[iTb]->iPrevCont = -1; // reset (local copy only)
+			}
+		}
+	}
 
-    // find free container
-    for (size_t iCont = DOCKCONT_MAX, len = _vContainer.size(); iCont < len; ++iCont)
-    {
-        if (pArrayPos[iCont] == FALSE)
-        {
-            // and test if container is hidden
-            if (!_vContainer[iCont]->isVisible())
-            {
+	// find free container
+	for (size_t iCont = DOCKCONT_MAX, len = dockingContVectorSize; iCont < len; ++iCont)
+	{
+		if (pArrayPos[iCont] == FALSE)
+		{
+			// and test if container is hidden
+			if (!_vContainer[iCont]->isVisible())
+			{
 				iRetCont = static_cast<int32_t>(iCont);
-                break;
-            }
-        }
-    }
+				break;
+			}
+		}
+	}
 
-    delete [] pPrevDockList;
+	delete [] pPrevDockList;
 
-    // search for empty arrays
-    return iRetCont;
+	// search for empty arrays
+	return iRetCont;
 }

@@ -261,7 +261,7 @@ The comments are here for explanation, it's not necessary to translate them.
 					<Item id="44011" name="Distrazio Gabeko Modua"/>
 					<Item id="44019" name="Erakutsi Karaktere Guztiak"/>
 					<Item id="44020" name="Erakutsi Kosken Gida"/>
-					<Item id="44022" name="Hitzen Itzulbiraketa"/>
+					<Item id="44022" name="Lerroen Itzulbiraketa"/>
 					<Item id="44023" name="Zooma Handitu (Ktrl+sagu-gurpila Gora)"/>
 					<Item id="44024" name="Zooma Gutxitu (Ktrl+sagu-gurpila Behera)"/>
 					<Item id="44025" name="Erakutsi Zuriuneak eta Tabulazioak"/>
@@ -438,7 +438,6 @@ The comments are here for explanation, it's not necessary to translate them.
 				<Item id="1626" name="Hedatua (\n, \r, \t, \0, \x...)"/>
 				<Item id="1660" name="Ordeztu Fitxategietan"/>
 				<Item id="1665" name="Ordeztu Proiektuetan"/>
-				<Item id="1661" name="Jarraitu oraingo dok."/>
 				<Item id="1662" name="1. Proiektu-panela"/>
 				<Item id="1663" name="2. Proiektu-panela"/>
 				<Item id="1664" name="3. Proiektu-panela"/>
@@ -855,7 +854,6 @@ The comments are here for explanation, it's not necessary to translate them.
 					<Item id="6109" name="Ilundu fitxa ez-aktiboak"/>
 					<Item id="6110" name="Marraztu barra koloreduna fitxa aktiboan"/>
 
-					<Item id="6111" name="Erakutsi egoera-barra"/>
 					<Item id="6112" name="Erakutsi itxi botoia fitxa bakoitzean"/>
 					<Item id="6113" name="Klik bikoitza fitxategia ixteko"/>
 					<Item id="6118" name="Ezkutatu"/>
@@ -1069,7 +1067,6 @@ Zutabe-markatzaile anitz zehaztu ditzakezu zenbakiak zuriuneen bidez banatuta."/
 				</Backup>
 
 				<AutoCompletion title="Osaketa automatikoa">
-					<Item id="6115" name="Koskatze automatikoa"/>
 					<Item id="6807" name="Osaketa automatikoa"/>
 					<Item id="6808" name="Gaitu osaketa automatikoa sarrera bakoitzean"/>
 					<Item id="6809" name="Funtzio-osaketa"/>
@@ -1142,7 +1139,6 @@ Zutabe-markatzaile anitz zehaztu ditzakezu zenbakiak zuriuneen bidez banatuta."/
 						<Element name="Gaitu irekitako fitxategi guztientzat"/>
 						<Element name="Desgaitu"/>
 					</ComboBox>
-					<Item id="6308" name="Eraman sistemako tresna-barrara minimizatzean"/>
 					<Item id="6312" name="Fitxategi-egoeraren Antzemate Automatikoa"/>
 					<Item id="6313" name="Eguneratu isiliean"/>
 					<Item id="6325" name="Korritu azken lerrora eguneratu ondoren"/>
@@ -1486,10 +1482,8 @@ Bilatu fitxategi guztietan baina alde batera utzi log ala logs karpetak modu err
 			<finder-uncollapse-all value="Zabaldu guztiak"/>
 			<finder-copy value="Kopiatu Aukeratutako Lerroa(k)"/>
 			<finder-copy-verbatim value="Kopiatu"/>
-			<finder-copy-paths value="Kopiatu Bide-izena(k)"/>
 			<finder-select-all value="Aukeratu guztia"/>
 			<finder-clear-all value="Garbitu guztia"/>
-			<finder-open-all value="Ireki guztia"/>
 			<finder-purge-for-every-search value="Garbitu bilaketa bakoitzean"/>
 			<finder-wrap-long-lines value="Lerro luzeetako hitzen itzulbiraketa"/>
 			<common-ok value="Ados"/>

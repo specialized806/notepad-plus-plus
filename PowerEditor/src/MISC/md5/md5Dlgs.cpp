@@ -34,13 +34,13 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 		{
 			NppDarkMode::autoSubclassAndThemeChildControls(_hSelf);
 
-			HFONT hFont = createFont(TEXT("Courier New"), 9, false, _hSelf);
+			_hFont = createFont(L"Courier New", 9, false, _hSelf);
 
 			const HWND hHashPathEdit = ::GetDlgItem(_hSelf, IDC_HASH_PATH_EDIT);
 			const HWND hHashResult = ::GetDlgItem(_hSelf, IDC_HASH_RESULT_EDIT);
 
-			::SendMessage(hHashPathEdit, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
-			::SendMessage(hHashResult, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
+			::SendMessage(hHashPathEdit, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+			::SendMessage(hHashResult, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
 
 			::SetWindowLongPtr(hHashPathEdit, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 			_oldHashPathEditProc = reinterpret_cast<WNDPROC>(::SetWindowLongPtr(hHashPathEdit, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HashPathEditStaticProc)));
@@ -85,15 +85,32 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 			return TRUE;
 		}
 
+		case WM_DPICHANGED:
+		{
+			_dpiManager.setDpiWP(wParam);
+
+			destroy();
+			_hFont = createFont(L"Courier New", 9, false, _hSelf);
+
+			::SendDlgItemMessageW(_hSelf, IDC_HASH_PATH_EDIT, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+			::SendDlgItemMessageW(_hSelf, IDC_HASH_RESULT_EDIT, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+
+			setPositionDpi(lParam);
+
+			getWindowRect(_rc);
+
+			return TRUE;
+		}
+
 		case WM_COMMAND:
 		{
-			switch (wParam)
+			switch (LOWORD(wParam))
 			{
-				case IDCANCEL :
+				case IDCANCEL:
 					display(false);
 					return TRUE;
 				
-				case IDOK :
+				case IDOK:
 				{
 					return TRUE;
 				}
@@ -101,7 +118,7 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 				case IDC_HASH_FILEBROWSER_BUTTON:
 				{
 					CustomFileDialog fDlg(_hSelf);
-					fDlg.setExtFilter(TEXT("All types"), TEXT(".*"));
+					fDlg.setExtFilter(L"All types", L".*");
 
 					const auto& fns = fDlg.doOpenMultiFilesDlg();
 					if (!fns.empty())
@@ -120,13 +137,13 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 								if (md5Result)
 								{
 									files2check += it;
-									files2check += TEXT("\r\n");
+									files2check += L"\r\n";
 
 									wchar_t* fileName = ::PathFindFileName(it.c_str());
 									hashResultStr += wmc.char2wchar(md5Result, CP_ACP);
-									hashResultStr += TEXT("  ");
+									hashResultStr += L"  ";
 									hashResultStr += fileName;
-									hashResultStr += TEXT("\r\n");
+									hashResultStr += L"\r\n";
 								}
 							}
 							else
@@ -162,16 +179,16 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 								}
 
 								for (int i = 0; i < _ht; i++)
-									wsprintf(hashStr + i * 2, TEXT("%02x"), hash[i]);
+									wsprintf(hashStr + i * 2, L"%02x", hash[i]);
 
 								files2check += it;
-								files2check += TEXT("\r\n");
+								files2check += L"\r\n";
 
 								wchar_t* fileName = ::PathFindFileName(it.c_str());
 								hashResultStr += hashStr;
-								hashResultStr += TEXT("  ");
+								hashResultStr += L"  ";
 								hashResultStr += fileName;
-								hashResultStr += TEXT("\r\n");
+								hashResultStr += L"\r\n";
 							}
 						}
 
@@ -200,6 +217,13 @@ intptr_t CALLBACK HashFromFilesDlg::run_dlgProc(UINT message, WPARAM wParam, LPA
 				default :
 					break;
 			}
+			break;
+		}
+
+		case WM_DESTROY:
+		{
+			destroy();
+			return TRUE;
 		}
 	}
 	return FALSE;
@@ -247,29 +271,29 @@ void HashFromFilesDlg::doDialog(bool isRTL)
 		{
 			case hash_md5:
 			{
-				title = TEXT("Generate MD5 digest from files");
-				buttonText = TEXT("Choose files to &generate MD5...");
+				title = L"Generate MD5 digest from files";
+				buttonText = L"Choose files to &generate MD5...";
 			}
 			break;
 
 			case hash_sha1:
 			{
-				title = TEXT("Generate SHA-1 digest from files");
-				buttonText = TEXT("Choose files to &generate SHA-1...");
+				title = L"Generate SHA-1 digest from files";
+				buttonText = L"Choose files to &generate SHA-1...";
 			}
 			break;
 
 			case hash_sha256:
 			{
-				title = TEXT("Generate SHA-256 digest from files");
-				buttonText = TEXT("Choose files to &generate SHA-256...");
+				title = L"Generate SHA-256 digest from files";
+				buttonText = L"Choose files to &generate SHA-256...";
 			}
 			break;
 
 			case hash_sha512:
 			{
-				title = TEXT("Generate SHA-1 digest from files");
-				buttonText = TEXT("Choose files to &generate SHA-512...");
+				title = L"Generate SHA-1 digest from files";
+				buttonText = L"Choose files to &generate SHA-512...";
 			}
 			break;
 
@@ -281,7 +305,17 @@ void HashFromFilesDlg::doDialog(bool isRTL)
 	}
 
 	// Adjust the position in the center
+	moveForDpiChange();
 	goToCenter(SWP_SHOWWINDOW | SWP_NOSIZE);
+}
+
+void HashFromFilesDlg::destroy()
+{
+	if (_hFont != nullptr)
+	{
+		::DeleteObject(_hFont);
+		_hFont = nullptr;
+	}
 }
 
 void HashFromTextDlg::generateHash()
@@ -334,7 +368,7 @@ void HashFromTextDlg::generateHash()
 			}
 
 			for (int i = 0; i < _ht; i++)
-				wsprintf(hashStr + i * 2, TEXT("%02x"), hash[i]);
+				wsprintf(hashStr + i * 2, L"%02x", hash[i]);
 
 			::SetDlgItemText(_hSelf, IDC_HASH_RESULT_FOMTEXT_EDIT, hashStr);
 		}
@@ -445,13 +479,13 @@ intptr_t CALLBACK HashFromTextDlg::run_dlgProc(UINT message, WPARAM wParam, LPAR
 		{
 			NppDarkMode::autoSubclassAndThemeChildControls(_hSelf);
 
-			HFONT hFont = createFont(TEXT("Courier New"), 9, false, _hSelf);
+			_hFont = createFont(L"Courier New", 9, false, _hSelf);
 
 			const HWND hHashTextEdit = ::GetDlgItem(_hSelf, IDC_HASH_TEXT_EDIT);
 			const HWND hHashResult = ::GetDlgItem(_hSelf, IDC_HASH_RESULT_FOMTEXT_EDIT);
 
-			::SendMessage(hHashTextEdit, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
-			::SendMessage(hHashResult, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
+			::SendMessage(hHashTextEdit, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+			::SendMessage(hHashResult, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
 
 			::SetWindowLongPtr(hHashTextEdit, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 			_oldHashTextEditProc = reinterpret_cast<WNDPROC>(::SetWindowLongPtr(hHashTextEdit, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HashTextEditStaticProc)));
@@ -501,6 +535,23 @@ intptr_t CALLBACK HashFromTextDlg::run_dlgProc(UINT message, WPARAM wParam, LPAR
 			return TRUE;
 		}
 
+		case WM_DPICHANGED:
+		{
+			_dpiManager.setDpiWP(wParam);
+
+			destroy();
+			_hFont = createFont(L"Courier New", 9, false, _hSelf);
+
+			::SendDlgItemMessageW(_hSelf, IDC_HASH_TEXT_EDIT, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+			::SendDlgItemMessageW(_hSelf, IDC_HASH_RESULT_FOMTEXT_EDIT, WM_SETFONT, reinterpret_cast<WPARAM>(_hFont), TRUE);
+
+			setPositionDpi(lParam);
+
+			getWindowRect(_rc);
+
+			return TRUE;
+		}
+
 		case WM_COMMAND:
 		{
 			if (HIWORD(wParam) == EN_CHANGE && LOWORD(wParam) == IDC_HASH_TEXT_EDIT)
@@ -515,7 +566,7 @@ intptr_t CALLBACK HashFromTextDlg::run_dlgProc(UINT message, WPARAM wParam, LPAR
 				}
 			}
 
-			switch (wParam)
+			switch (LOWORD(wParam))
 			{
 				case IDCANCEL :
 					display(false);
@@ -555,6 +606,13 @@ intptr_t CALLBACK HashFromTextDlg::run_dlgProc(UINT message, WPARAM wParam, LPAR
 				default :
 					break;
 			}
+			break;
+		}
+
+		case WM_DESTROY:
+		{
+			destroy();
+			return TRUE;
 		}
 	}
 	return FALSE;
@@ -575,25 +633,25 @@ void HashFromTextDlg::doDialog(bool isRTL)
 		{
 			case hash_md5:
 			{
-				title = TEXT("Generate MD5 digest");
+				title = L"Generate MD5 digest";
 			}
 			break;
 			
 			case hash_sha1:
 			{
-				title = TEXT("Generate SHA-1 digest");
+				title = L"Generate SHA-1 digest";
 			}
 			break;
 
 			case hash_sha256:
 			{
-				title = TEXT("Generate SHA-256 digest");
+				title = L"Generate SHA-256 digest";
 			}
 			break;
 
 			case hash_sha512:
 			{
-				title = TEXT("Generate SHA-512 digest");
+				title = L"Generate SHA-512 digest";
 			}
 			break;
 
@@ -605,5 +663,15 @@ void HashFromTextDlg::doDialog(bool isRTL)
 	}
 
 	// Adjust the position in the center
+	moveForDpiChange();
 	goToCenter(SWP_SHOWWINDOW | SWP_NOSIZE);
+}
+
+void HashFromTextDlg::destroy()
+{
+	if (_hFont != nullptr)
+	{
+		::DeleteObject(_hFont);
+		_hFont = nullptr;
+	}
 }
